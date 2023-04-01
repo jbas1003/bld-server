@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('event_date');
             $table->string('created_by');
             $table->string('created_on');
-            $table->string('updated_by');
-            $table->string('updated_on');
         });
     }
 
