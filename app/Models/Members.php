@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\Member As Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -22,10 +22,6 @@ class Members extends Authenticatable
         'religion',
         'baptism',
         'confirmation',
-        'occupation',
-        'specialty',
-        'company',
-        'company_address',
     ];
 
     public $timestamps = false;
