@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('emergency_contacts', function (Blueprint $table) {
+        Schema::create('tblemergency_contacts', function (Blueprint $table) {
             $table->id('emergencyContact_id');
-            $table->string('emergencyContact_member_id');
-            $table->string('contactNumber_id');
+            $table->string('emergencyContactInfo_id');
             $table->string('member_id');
             $table->string('created_by');
             $table->string('created_on');
