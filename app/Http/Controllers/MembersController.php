@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Members;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class MembersController extends Controller
 {
@@ -42,10 +43,6 @@ class MembersController extends Controller
                 'religion' => 'required|string|max:191',
                 'baptism' => 'required|string|max:191',
                 'confirmation' => 'required|string|max:191',
-                'occupation' => 'required|string|max:191',
-                'specialty' => 'required|string|max:191',
-                'company' => 'required|string|max:191',
-                'company_address' => 'required|string|max:191',
             ]);
 
             if ($validator->fails()) {
@@ -56,22 +53,30 @@ class MembersController extends Controller
             } else {
                 $member = Members::create([
                     'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
-                    'first_name' => $request->first_name,
+                    'middle_name' => $request->first_name,
+                    'last_name' => $request->first_name,
+                    'nickname' => $request->first_name,
+                    'birthday' => $request->first_name,
+                    'gender' => $request->first_name,
+                    'religion' => $request->first_name,
+                    'baptism' => $request->first_name,
+                    'confirmation' => $request->first_name,
                 ]);
+
+                if ($member) {
+                    return response()->json([
+                        'status' => 200,
+                        'body' => $member
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => 500,
+                        'errors' => 'Server Error!'
+                    ]);
+                }
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
 
         // END: Add Members
@@ -82,7 +87,43 @@ class MembersController extends Controller
      */
     public function show(Members $members)
     {
-        //
+        //START: Show all members
+
+        try {
+            if ($members->member_id) {
+                $getMemeber = Members::find($members->member_id);
+
+                if ($getMemeber->count() > 0) {
+                    return response()->json([
+                        'status' => 200,
+                        'body' => $getMemeber
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'No record found.'
+                    ], 404);
+                }
+            } else {
+                $getMembers = Members::all();
+
+                if ($getMembers->count() > 0) {
+                    return response()->json([
+                        'status' => 200,
+                        'body' => $getMembers
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'No records found.'
+                    ], 404);
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+        // END: Show all members
     }
 
     /**
