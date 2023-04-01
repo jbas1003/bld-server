@@ -22,6 +22,9 @@ class Members extends Authenticatable
         'religion',
         'baptism',
         'confirmation',
+        'member_status_id',
+        'created_by',
+        'created_on'
     ];
 
     public $timestamps = false;
