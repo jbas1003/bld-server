@@ -90,13 +90,13 @@ class MembersController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Members $members)
+    public function show(Request $request)
     {
         //START: Show all members
 
         try {
-            if ($members->count() > 0) {
-                $getMember = Members::find($members);
+            if ($request->member_id) {
+                $getMember = Members::where('member_id', '=', $request->member_id)->get();
 
                 if ($getMember->count() > 0) {
                     return response()->json([
@@ -142,9 +142,9 @@ class MembersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Members $members)
+    public function update(Request $request)
     {
-        //
+        
     }
 
     /**
