@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contact_numbers', function (Blueprint $table) {
+        Schema::create('tblcontact_numbers', function (Blueprint $table) {
             $table->id('contactNumber_id');
             $table->string('mobile');
             $table->string('created_by');
