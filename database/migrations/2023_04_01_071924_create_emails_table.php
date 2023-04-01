@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('emails', function (Blueprint $table) {
             $table->id('email_id');
-            $table-string('email');
-            $table-string('created_by');
-            $table-string('created_on');
+            $table->string('email');
+            $table->string('created_by');
+            $table->string('created_on');
         });
     }
 
