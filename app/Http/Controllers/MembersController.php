@@ -41,8 +41,10 @@ class MembersController extends Controller
                 'birthday' => 'required|string|max:191',
                 'gender' => 'required|string|max:191',
                 'religion' => 'required|string|max:191',
-                'baptism' => 'required|string|max:191',
-                'confirmation' => 'required|string|max:191',
+                'baptism' => 'required|boolean',
+                'confirmation' => 'required|boolean',
+                'member_status_id' => 'required|integer',
+                'created_by' => 'required|integer'
             ]);
 
             if ($validator->fails()) {
@@ -53,20 +55,23 @@ class MembersController extends Controller
             } else {
                 $member = Members::create([
                     'first_name' => $request->first_name,
-                    'middle_name' => $request->first_name,
-                    'last_name' => $request->first_name,
-                    'nickname' => $request->first_name,
-                    'birthday' => $request->first_name,
-                    'gender' => $request->first_name,
-                    'religion' => $request->first_name,
-                    'baptism' => $request->first_name,
-                    'confirmation' => $request->first_name,
+                    'middle_name' => $request->middle_name,
+                    'last_name' => $request->last_name,
+                    'nickname' => $request->nickname,
+                    'birthday' => $request->birthday,
+                    'gender' => $request->gender,
+                    'religion' => $request->religion,
+                    'baptism' => $request->baptism,
+                    'confirmation' => $request->confirmation,
+                    'member_status_id' => $request->member_status_id,
+                    'created_by' => $request->created_by,
+                    'created_on' => now()
                 ]);
 
                 if ($member) {
                     return response()->json([
                         'status' => 200,
-                        'body' => $member
+                        'message' => 'Record created successfully!'
                     ], 200);
                 } else {
                     return response()->json([
@@ -90,13 +95,13 @@ class MembersController extends Controller
         //START: Show all members
 
         try {
-            if ($members->member_id) {
-                $getMemeber = Members::find($members->member_id);
+            if ($members->count() > 0) {
+                $getMember = Members::find($members);
 
-                if ($getMemeber->count() > 0) {
+                if ($getMember->count() > 0) {
                     return response()->json([
                         'status' => 200,
-                        'body' => $getMemeber
+                        'body' => $getMember
                     ], 200);
                 } else {
                     return response()->json([
