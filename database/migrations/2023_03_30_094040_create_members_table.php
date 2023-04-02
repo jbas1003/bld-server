@@ -22,15 +22,9 @@ return new class extends Migration
             $table->string('religion');
             $table->string('baptism');
             $table->string('confirmation');
-            $table->string('occupation');
-            $table->string('specialty');
-            $table->string('company');
-            $table->string('company_address');
-            $table->string('member_status');
+            $table->string('member_status_id');
             $table->string('created_by');
             $table->string('created_on');
-            $table->string('updated_by');
-            $table->string('updated_on');
         });
     }
 

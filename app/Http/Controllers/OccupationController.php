@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EventType;
+use App\Models\Occupation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class EventTypeController extends Controller
+class OccupationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,27 +32,33 @@ class EventTypeController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_type_name' => 'required|string|max:191',
-                'created_by' => 'required|integer'
+                'occupation_name' => 'required|string|max:191',
+                'specialty' => 'required|string|max:191',
+                'company' => 'required|string|max:191',
+                'address_id' => 'nullable|integer',
+                'created_by' => 'required|integer',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 422,
-                    'errors' => $validator->message()
-                ], 422);
+                    'errors' => $validator->messages(),
+                ]);
             } else {
-                $eventType = EventType::create([
-                    'event_type_name' => $request->event_type_name,
+                $occupation = Occupation::create([
+                    'occupation_name' => $request->occupation_name,
+                    'specialty' => $request->specialty,
+                    'company' => $request->company,
+                    'address_id' => $request->address_id,
                     'created_by' => $request->created_by,
                     'created_on' => now()
                 ]);
 
-                if ($eventType) {
+                if ($occupation) {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'Record successfully added!'
-                    ], 200);
+                        'occupation' => $occupation->id
+                    ]);
                 } else {
                     return response()->json([
                         'status' => 500,
@@ -68,7 +74,7 @@ class EventTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EventType $eventType)
+    public function show(Occupation $occupation)
     {
         //
     }
@@ -76,7 +82,7 @@ class EventTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EventType $eventType)
+    public function edit(Occupation $occupation)
     {
         //
     }
@@ -84,7 +90,7 @@ class EventTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EventType $eventType)
+    public function update(Request $request, Occupation $occupation)
     {
         //
     }
@@ -92,7 +98,7 @@ class EventTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EventType $eventType)
+    public function destroy(Occupation $occupation)
     {
         //
     }

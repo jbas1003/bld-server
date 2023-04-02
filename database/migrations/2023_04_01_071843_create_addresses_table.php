@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tblattendances', function (Blueprint $table) {
-            $table->id('attendance_id');
-            $table->string('member_id');
-            $table->string('event_id');
-            $table->string('event_date');
+        Schema::create('tbladdresses', function (Blueprint $table) {
+            $table->increments('address_id');
+            $table->string('address_line1')->nullable();
+            $table->string('address_line2');
+            $table->string('city');
             $table->string('created_by');
             $table->string('created_on');
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('addresses');
     }
 };

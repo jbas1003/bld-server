@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EventType extends Model
+class EmercencyContactinfo extends Model
 {
     use HasFactory;
 
-    protected $table = 'tblevent_types';
+    protected $table = 'tblemercency_contactinfos';
     protected $fillable = [
-        'event_type_name',
+        'member_id',
+        'contactNumber_id',
         'created_by',
-        'created_on',
+        'created_on'
     ];
 
-    public $timestamps = false;
+    protected $timestamps = false;
 }

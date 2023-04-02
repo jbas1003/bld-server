@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EventType;
 use Illuminate\Http\Request;
+use App\Models\ContactNumbers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class EventTypeController extends Controller
+class ContactNumbersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,31 +32,31 @@ class EventTypeController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_type_name' => 'required|string|max:191',
-                'created_by' => 'required|integer'
+                'mobile' => 'required|string|max:20',
+                'created_by' => 'required|integer',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 422,
-                    'errors' => $validator->message()
-                ], 422);
+                    'errors' => $validator->messages()
+                ]);
             } else {
-                $eventType = EventType::create([
-                    'event_type_name' => $request->event_type_name,
+                $contactNumber = ContactNumbers::create([
+                    'mobile' => $request->mobile,
                     'created_by' => $request->created_by,
                     'created_on' => now()
                 ]);
 
-                if ($eventType) {
+                if($contactNumber) {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'Record successfully added!'
+                        'contact_number' => $contactNumber->id
                     ], 200);
                 } else {
                     return response()->json([
                         'status' => 500,
-                        'errors' => 'Server Error.'
+                        'errors' => 'Server error.'
                     ], 500);
                 }
             }
@@ -68,7 +68,7 @@ class EventTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EventType $eventType)
+    public function show(ContactNumbers $contactNumbers)
     {
         //
     }
@@ -76,7 +76,7 @@ class EventTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EventType $eventType)
+    public function edit(ContactNumbers $contactNumbers)
     {
         //
     }
@@ -84,7 +84,7 @@ class EventTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EventType $eventType)
+    public function update(Request $request, ContactNumbers $contactNumbers)
     {
         //
     }
@@ -92,7 +92,7 @@ class EventTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EventType $eventType)
+    public function destroy(ContactNumbers $contactNumbers)
     {
         //
     }

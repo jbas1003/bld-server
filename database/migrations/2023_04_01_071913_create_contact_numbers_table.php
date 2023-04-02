@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tblattendances', function (Blueprint $table) {
-            $table->id('attendance_id');
-            $table->string('member_id');
-            $table->string('event_id');
-            $table->string('event_date');
+        Schema::create('tblcontact_numbers', function (Blueprint $table) {
+            $table->id('contactNumber_id');
+            $table->string('mobile');
             $table->string('created_by');
             $table->string('created_on');
         });
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('contact_numbers');
     }
 };

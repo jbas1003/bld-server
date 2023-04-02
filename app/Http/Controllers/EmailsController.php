@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EventType;
+use App\Models\Emails;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class EventTypeController extends Controller
+class EmailsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,8 +32,8 @@ class EventTypeController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_type_name' => 'required|string|max:191',
-                'created_by' => 'required|integer'
+                'email' => 'nullable|string|max:191',
+                'created_by' => 'required|integer',
             ]);
 
             if ($validator->fails()) {
@@ -42,22 +42,31 @@ class EventTypeController extends Controller
                     'errors' => $validator->message()
                 ], 422);
             } else {
-                $eventType = EventType::create([
-                    'event_type_name' => $request->event_type_name,
-                    'created_by' => $request->created_by,
-                    'created_on' => now()
-                ]);
+                $ifExists = Emails::where('email', $request->email);
 
-                if ($eventType) {
+                if ($ifExists) {
                     return response()->json([
-                        'status' => 200,
-                        'message' => 'Record successfully added!'
-                    ], 200);
+                        'status' => 422,
+                        'errors' => 'Email already exist.'
+                    ]);
                 } else {
-                    return response()->json([
-                        'status' => 500,
-                        'errors' => 'Server Error.'
-                    ], 500);
+                    $email = Emails::create([
+                        'email' => $request->email,
+                        'created_by' => $request->created_by,
+                        'created_on' => now()
+                    ]);
+    
+                    if ($email) {
+                        return response()->json([
+                            'status' => 200,
+                            'email' => $email->id
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 500,
+                            'errors' => 'Server Error.'
+                        ], 500);
+                    }
                 }
             }
         } catch (\Throwable $th) {
@@ -68,7 +77,7 @@ class EventTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EventType $eventType)
+    public function show(Emails $emails)
     {
         //
     }
@@ -76,7 +85,7 @@ class EventTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EventType $eventType)
+    public function edit(Emails $emails)
     {
         //
     }
@@ -84,7 +93,7 @@ class EventTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EventType $eventType)
+    public function update(Request $request, Emails $emails)
     {
         //
     }
@@ -92,7 +101,7 @@ class EventTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EventType $eventType)
+    public function destroy(Emails $emails)
     {
         //
     }
