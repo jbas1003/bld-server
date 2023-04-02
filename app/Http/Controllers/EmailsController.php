@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Emails;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class EmailsController extends Controller
 {
@@ -29,7 +30,48 @@ class EmailsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'nullable|string|max:191',
+                'created_by' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => $validator->message()
+                ], 422);
+            } else {
+                $ifExists = Emails::where('email', $request->email);
+
+                if ($ifExists) {
+                    return response()->json([
+                        'status' => 422,
+                        'errors' => 'Email already exist.'
+                    ]);
+                } else {
+                    $email = Emails::create([
+                        'email' => $request->email,
+                        'created_by' => $request->created_by,
+                        'created_on' => now()
+                    ]);
+    
+                    if ($email) {
+                        return response()->json([
+                            'status' => 200,
+                            'email' => $email->id
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 500,
+                            'errors' => 'Server Error.'
+                        ], 500);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
