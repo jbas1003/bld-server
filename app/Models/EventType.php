@@ -13,8 +13,8 @@ class EventType extends Model
     protected $fillable = [
         'event_type_name',
         'created_by',
-        'updated_by',
+        'created_on',
     ];
 
-    protected $timestamps = false;
+    public $timestamps = false;
 }
