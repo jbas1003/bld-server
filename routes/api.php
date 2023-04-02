@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailsController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\AddressesController;
+use App\Http\Controllers\EventTypeController;
 use App\Http\Controllers\OccupationController;
+use App\Http\Controllers\MemberStatusController;
 use App\Http\Controllers\ContactNumbersController;
 
 /*
@@ -57,3 +59,17 @@ Route::get('emails', [EmailsController::class, 'show']);
 Route::post('emails', [EmailsController::class, 'store']);
 
 // END: Emails Routes
+
+// START: Event Types Routes
+
+Route::get('event_types', [EventTypeController::class, 'show']);
+Route::post('event_types', [EventTypeController::class, 'store']);
+
+// END: Event Types Routes
+
+// START: Member Status Routes
+
+Route::get('member_status', [MemberStatusController::class, 'show']);
+Route::post('member_status', [MemberStatusController::class, 'store']);
+
+// END: Member Status Routes
