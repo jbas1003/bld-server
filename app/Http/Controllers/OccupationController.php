@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Occupation;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class OccupationController extends Controller
 {
@@ -29,7 +30,45 @@ class OccupationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'occupation_name' => 'required|string|max:191',
+                'specialty' => 'required|string|max:191',
+                'company' => 'required|string|max:191',
+                'address_id' => 'nullable|integer',
+                'created_by' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => $validator->messages(),
+                ]);
+            } else {
+                $occupation = Occupation::create([
+                    'occupation_name' => $request->occupation_name,
+                    'specialty' => $request->specialty,
+                    'company' => $request->company,
+                    'address_id' => $request->address_id,
+                    'created_by' => $request->created_by,
+                    'created_on' => now()
+                ]);
+
+                if ($occupation) {
+                    return response()->json([
+                        'status' => 200,
+                        'occupation' => $occupation->id
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 500,
+                        'errors' => 'Server Error.'
+                    ], 500);
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
