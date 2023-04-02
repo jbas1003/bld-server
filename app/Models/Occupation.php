@@ -14,7 +14,9 @@ class Occupation extends Model
         'occupation_name',
         'specialty',
         'company',
-        'address_id',
+        'address_line1',
+        'address_line2',
+        'city',
         'created_by',
         'created_on',
     ];
