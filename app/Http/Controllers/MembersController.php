@@ -44,13 +44,13 @@ class MembersController extends Controller
                 'baptism' => 'required|boolean',
                 'confirmation' => 'required|boolean',
                 'member_status_id' => 'required|integer',
-                'created_by' => 'required|integer'
+                'created_by' => 'required|string'
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 422,
-                    'errors' => $validator->message(),
+                    'errors' => $validator->messages(),
                 ], 422);
             } else {
                 $member = Members::create([
@@ -76,8 +76,8 @@ class MembersController extends Controller
                 } else {
                     return response()->json([
                         'status' => 500,
-                        'errors' => 'Server Error!'
-                    ]);
+                        'errors' => 'Server Error.'
+                    ], 500);
                 }
             }
         } catch (\Throwable $th) {
