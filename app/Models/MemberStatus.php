@@ -9,12 +9,12 @@ class MemberStatus extends Model
 {
     use HasFactory;
 
-    protected $table = 'tblememberStatus';
+    protected $table = 'tblmember_statuses';
     protected $fillable = [
         'status',
         'created_by',
         'created_on'
     ];
 
-    protected $timestamps = false;
+    public $timestamps = false;
 }
