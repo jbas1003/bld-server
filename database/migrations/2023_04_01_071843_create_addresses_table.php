@@ -12,11 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tbladdresses', function (Blueprint $table) {
-            $table->id('address_id');
-            $table->string('house_no');
-            $table->string('street');
-            $table->string('brangay');
-            $table->string('subdivision');
+            $table->increments('address_id');
+            $table->string('address_line1')->nullable();
+            $table->string('address_line2');
             $table->string('city');
             $table->string('created_by');
             $table->string('created_on');
