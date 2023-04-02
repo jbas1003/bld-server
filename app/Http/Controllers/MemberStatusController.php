@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Models\MemberStatus;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class MemberStatusController extends Controller
 {
@@ -29,7 +31,48 @@ class MemberStatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'status' => 'required|string|max:191',
+                'created_by' => 'required|integer',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => $request->message()
+                ], 422);
+            } else {
+                $ifExist = MemberStatus::where(`LOWER('status')`, Str::lower($request->status));
+    
+                if ($ifExist) {
+                    return response()->json([
+                        'status' => 422,
+                        'errors' => 'Record already exist.'
+                    ], 422);
+                } else {
+                    $memberStatus = MemberStatus::create([
+                        'status' => $request->status,
+                        'created_by' => $request->created_by,
+                        'created_on' => now()
+                    ]);
+    
+                    if ($memberStatus) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Record successfully created!'
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 500,
+                            'errors' => 'Server Error.'
+                        ], 500);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
