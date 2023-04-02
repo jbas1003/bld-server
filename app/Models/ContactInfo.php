@@ -20,5 +20,5 @@ class ContactInfo extends Model
         'created_on'
     ];
 
-    protected $timestamps = false;
+    public $timestamps = false;
 }
