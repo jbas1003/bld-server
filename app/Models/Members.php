@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Foundation\Auth\Member As Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\Member As Authenticatable;
 
 class Members extends Authenticatable
 {
@@ -30,4 +31,8 @@ class Members extends Authenticatable
     ];
 
     public $timestamps = false;
+
+    public function contactInfo ():BelongsTo {
+        return $this->belongsTo(ContactInfo::class);
+    }
 }
