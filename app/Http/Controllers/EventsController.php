@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Events;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class EventsController extends Controller
 {
@@ -29,7 +30,58 @@ class EventsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'event_name' => 'required|string:max:200',
+                'event_subtitle' => 'nullable|string|max:200',
+                'start_date' => 'nullable|string|max:200',
+                'end_date' => 'nullable|string|max:200',
+                'status' => 'nullable|string|max:200',
+                'event_type_id' => 'required|integer',
+                'created_by' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => $validator->message()
+                ], 422);
+            } else {
+                $ifExist = Events::where('event_name', $request->event_name)->get();
+
+                if ($ifExist->count()) {
+                    return response()->json([
+                        'status' => 422,
+                        'errors' => 'Record already exist.'
+                    ], 422);
+                } else {
+                    $event = Events::create([
+                        'event_name' => $request->event_name,
+                        'event_subtitle' => $request->event_subtitle,
+                        'start_date' => $request->start_date,
+                        'end_date' => $request->end_date,
+                        'status' => $request->status,
+                        'event_type_id' => $request->event_type_id,
+                        'created_by' => $request->created_by,
+                        'created_on' => now()
+                    ]);
+
+                    if ($event) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Record successfully added!'
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 500,
+                            'errors' => 'Server Error.'
+                        ], 500);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
