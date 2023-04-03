@@ -19,6 +19,8 @@ class Members extends Authenticatable
         'nickname',
         'birthday',
         'gender',
+        'civil_status',
+        'spouse_member_id',
         'religion',
         'baptism',
         'confirmation',
