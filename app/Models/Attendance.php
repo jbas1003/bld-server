@@ -11,10 +11,11 @@ class Attendance extends Model
 
     protected $table = 'tblattendances';
     protected $fillable = [
+        'member_id',
         'event_id',
         'event_date',
         'created_by',
-        'updated_by',
+        'created_on',
     ];
 
     public $timestamps = false;
