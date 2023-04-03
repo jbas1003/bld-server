@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('tblevents', function (Blueprint $table) {
             $table->id('event_id');
             $table->string('event_name');
+            $table->string('event_subtitle')->nullable();
+            $table->string('start_date')->nullable();
+            $table->string('end_date')->nullable();
+            $table->string('status');
             $table->string('event_type_id');
             $table->string('created_by');
             $table->string('created_on');
