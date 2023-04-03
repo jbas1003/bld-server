@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ContactInfo extends Model
 {
@@ -21,4 +23,24 @@ class ContactInfo extends Model
     ];
 
     public $timestamps = false;
+
+    public function members(): HasOne {
+        return $this->hasOne(Members::class);
+    }
+
+    public function addresses(): HasMany {
+        return $this->hasMany(Addresses::class);
+    }
+
+    public function contactNumbers(): HasMany {
+        return $this->hasMany(ContactNumbers::class);
+    }
+
+    public function emails(): HasMany {
+        return $this->hasMany(Emails::class);
+    }
+
+    public function occupations(): HasOne {
+        return $this->hasOne(Occupation::class);
+    }
 }
