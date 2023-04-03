@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('birthday');
             $table->string('gender');
             $table->string('civil_status');
-            $table->string('spouse_member_id');
+            $table->string('spouse_member_id')->nullable();
             $table->string('religion');
             $table->string('baptism');
             $table->string('confirmation');
