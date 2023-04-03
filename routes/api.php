@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailsController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\AddressesController;
 use App\Http\Controllers\EventTypeController;
@@ -59,6 +60,13 @@ Route::get('emails', [EmailsController::class, 'show']);
 Route::post('emails', [EmailsController::class, 'store']);
 
 // END: Emails Routes
+
+// START: Events Routes
+
+Route::get('events', [EventsController::class, 'show']);
+Route::post('events', [EventsController::class, 'store']);
+
+// END: Events Routes
 
 // START: Event Types Routes
 
