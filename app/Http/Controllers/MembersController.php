@@ -9,6 +9,7 @@ use App\Models\Occupation;
 use App\Models\ContactInfo;
 use Illuminate\Http\Request;
 use App\Models\ContactNumbers;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -190,34 +191,26 @@ class MembersController extends Controller
         //START: Show all members
 
         try {
-            if ($request->member_id) {
-                $getMember = Members::where('member_id', '=', $request->member_id)->get();
-
-                if ($getMember->count() > 0) {
-                    return response()->json([
-                        'status' => 200,
-                        'body' => $getMember
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => 404,
-                        'message' => 'No record found.'
-                    ], 404);
-                }
+            $getAllMembers = ContactInfo::join('tblmembers', 'tblcontact_infos.member_id', '=', 'tblmembers.member_id')
+                                ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                ->join('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
+                                ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.nickname',
+                                        'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender',
+                                        'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city')
+                                ->get();
+                            
+            if ($getAllMembers->count() > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'body' => $getAllMembers
+                ], 200);
             } else {
-                $getMembers = Members::all();
-
-                if ($getMembers->count() > 0) {
-                    return response()->json([
-                        'status' => 200,
-                        'body' => $getMembers
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => 404,
-                        'message' => 'No records found.'
-                    ], 404);
-                }
+                return response()->json([
+                    'status' => 422,
+                    'errors' => 'No records found.'
+                ], 422);
             }
         } catch (\Throwable $th) {
             throw $th;
