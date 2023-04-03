@@ -42,22 +42,31 @@ class EventTypeController extends Controller
                     'errors' => $validator->message()
                 ], 422);
             } else {
-                $eventType = EventType::create([
-                    'event_type_name' => $request->event_type_name,
-                    'created_by' => $request->created_by,
-                    'created_on' => now()
-                ]);
+                $ifExist = EventType::where('event_type_name', $request->event_type_name)->first();
 
-                if ($eventType) {
+                if ($ifExist) {
                     return response()->json([
-                        'status' => 200,
-                        'message' => 'Record successfully added!'
-                    ], 200);
+                        'status' => 422,
+                        'errors' => 'Record already existed.'
+                    ], 422);
                 } else {
-                    return response()->json([
-                        'status' => 500,
-                        'errors' => 'Server Error.'
-                    ], 500);
+                    $eventType = EventType::create([
+                        'event_type_name' => $request->event_type_name,
+                        'created_by' => $request->created_by,
+                        'created_on' => now()
+                    ]);
+    
+                    if ($eventType) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Record successfully added!'
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 500,
+                            'errors' => 'Server Error.'
+                        ], 500);
+                    }
                 }
             }
         } catch (\Throwable $th) {
