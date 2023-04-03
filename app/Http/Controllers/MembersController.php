@@ -117,15 +117,96 @@ class MembersController extends Controller
                 // $emailExist = Emails::where('email', $memberExistInAttendance->email)->first();
                 // $contactNumberExist = ContactNumbers::where('mobile', $memberExistInAttendance->mobile)->first();
 
-                if ($eventExist || $memberExist) {
-                    if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
-                        return response()->json([
-                            'status' => 422,
-                            'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
-                        ], 422);
+                if ($eventExist) {
+                    if ($memberExist) {
+                        if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
+                            return response()->json([
+                                'status' => 422,
+                                'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
+                            ], 422);
+                        } else {
+                            $getEvent = Events::where('event_name', $request->event_name)->first();
+                            
+                            $member = Members::create([
+                                'first_name' => $request->first_name,
+                                'middle_name' => $request->middle_name,
+                                'last_name' => $request->last_name,
+                                'nickname' => $request->nickname,
+                                'birthday' => $request->birthday,
+                                'gender' => $request->gender,
+                                'civil_status' => $request->civil_status,
+                                'spouse_member_id' => $request->spouse_member_id,
+                                'religion' => $request->religion,
+                                'baptism' => $request->baptism,
+                                'confirmation' => $request->confirmation,
+                                'member_status_id' => $request->member_status_id,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+            
+                            $address = Addresses::create([
+                                'address_line1' => $request->member_address_line1,
+                                'address_line2' => $request->member_address_line2,
+                                'city' => $request->member_city,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+        
+                            $contactNumber = ContactNumbers::create([
+                                'mobile' => $request->member_mobile,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+        
+                            $email = Emails::create([
+                                'email' => $request->email,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+        
+                            $occupation = Occupation::create([
+                                'occupation_name' => $request->occupation_name,
+                                'specialty' => $request->specialty,
+                                'company' => $request->company,
+                                'address_line1' => $request->company_address_line1,
+                                'address_line2' => $request->company_address_line2,
+                                'city' => $request->city,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+        
+                            $contactInfo = ContactInfo::create([
+                                'member_id' => $member->id,
+                                'address_id' => $address->id,
+                                'contactNumber_id' => $contactNumber->id,
+                                'email_id' => $email->id,
+                                'occupation_id' => $occupation->id,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+        
+                            $attendance = Attendance::create([
+                                'member_id' => $member->id,
+                                'event_id' => $getEvent->event_id,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+        
+                            if ($contactInfo) {
+                                return response()->json([
+                                    'status' => 200,
+                                    'message' => 'Record successfully added!'
+                                ], 200);
+                            } else {
+                                return response()->json([
+                                    'status' => 500,
+                                    'errors' => 'Server Error.'
+                                ], 500);
+                            }
+                        }
                     } else {
                         $getEvent = Events::where('event_name', $request->event_name)->first();
-                        
+                            
                         $member = Members::create([
                             'first_name' => $request->first_name,
                             'middle_name' => $request->middle_name,
