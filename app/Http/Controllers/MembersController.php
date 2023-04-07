@@ -39,7 +39,7 @@ class MembersController extends Controller
     public function store(Request $request)
     {
         //START: Add Members 
-
+        
         try {
             $validator = Validator::make($request->all(), [
                 // START: Events Data
