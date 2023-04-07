@@ -30,6 +30,7 @@ use App\Http\Controllers\ContactNumbersController;
 
 Route::get('members', [MembersController::class, 'show']);
 Route::post('members', [MembersController::class, 'store']);
+Route::put('members', [MembersController::class, 'update']);
 
 // END: Members Routes
 
