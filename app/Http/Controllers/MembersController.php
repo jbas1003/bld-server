@@ -315,7 +315,7 @@ class MembersController extends Controller
                                 ->join('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                                 ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.nickname',
                                 'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblmembers.spouse_member_id',
-                                'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city',
+                                'tblmembers.religion', 'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city',
                                 'tblevents.event_name', 'tblevents.event_subtitle')
                                 ->get();
               
@@ -351,7 +351,134 @@ class MembersController extends Controller
      */
     public function update(Request $request)
     {
-        
+        try {
+            $validator = Validator::make($request->all(), [
+
+
+                // START: Table Members Data
+
+                'first_name' => 'required|string|max:191',
+                'middle_name' => 'required|string|max:191',
+                'last_name' => 'required|string|max:191',
+                'nickname' => 'required|string|max:191',
+                'birthday' => 'required|string|max:191',
+                'gender' => 'required|string|max:191',
+                'civil_status' => 'required|string|max:191',
+                'spouse_member_id' => 'nullable|integer',
+                'religion' => 'required|string|max:191',
+                'baptism' => 'required|boolean',
+                'confirmation' => 'required|boolean',
+                'member_status_id' => 'required|integer',
+                // 'updated_by' => 'required|integer',
+
+                // END: Table Members Data
+
+                // START: Table Address Data
+
+                'member_address_line1' => 'nullable|string|max:191',
+                'member_address_line2' => 'nullable|string|max:255',
+                'member_city' => 'required|string|max:191',
+
+                // END: Table Address Data
+
+                // START: Table ContactNumbers Data
+
+                'member_mobile' => 'required|string|max:20',
+
+                // END: Table ContactNumbers Data
+
+                // START: Table Emails Data
+
+                'email' => 'required|string|max:191',
+
+                // END: Table Emails Data
+
+                // START: Table Occupations Data
+
+                'occupation_name' => 'required|string|max:191',
+                'specialty' => 'nullable|string|max:191',
+                'company' => 'nullable|string|max:191',
+                'company_address_line1' => 'nullable|string|max:191',
+                'company_address_line2' => 'nullable|string|max:255',
+                'company_city' => 'required|string|max:191',
+
+                // END: Table Occupations Data
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => $validator->messages(),
+                ], 422);
+            } else {
+                $memberExist = Members::where('member_id', $request->member_id);
+
+                if ($memberExist) {
+                    $getMember = ContactInfo::where('member_id', $request->member_id)->first();
+                    
+                    $member = Members::where('member_id', $getMember->member_id)
+                            ->update([
+                                'first_name' => $request->first_name,
+                                'middle_name' => $request->middle_name,
+                                'last_name' => $request->last_name,
+                                'nickname' => $request->nickname,
+                                'birthday' => $request->birthday,
+                                'gender' => $request->gender,
+                                'civil_status' => $request->civil_status,
+                                'spouse_member_id' => $request->spouse_member_id,
+                                'religion' => $request->religion,
+                                'baptism' => $request->baptism,
+                                'confirmation' => $request->confirmation,
+                                'member_status_id' => $request->member_status_id,
+                                // 'updated_by' => $request->updated_by,
+                                // 'updated_on' => now()
+                            ]);
+    
+                    $address = Addresses::where('address_id', $getMember->address_id)
+                            ->update([
+                                'address_line1' => $request->member_address_line1,
+                                'address_line2' => $request->member_address_line2,
+                                'city' => $request->member_city,
+                                // 'updated_by' => $request->updated_by,
+                                // 'updated_on' => now()
+                            ]);
+
+                    $contactNumber = ContactNumbers::where('contactNumber_id', $getMember->contactNumber_id)
+                            ->update([
+                                'mobile' => $request->member_mobile,
+                                // 'updated_by' => $request->updated_by,
+                                // 'updated_on' => now()
+                            ]);
+
+                    $email = Emails::where('email_id', $getMember->email_id)
+                            ->update([
+                                'email' => $request->email,
+                                // 'updated_by' => $request->updated_by,
+                                // 'updated_on' => now()
+                            ]);
+
+                    $occupation = Occupation::where('occupation_id', $getMember->occupation_id)
+                            ->update([
+                                'occupation_name' => $request->occupation_name,
+                                'specialty' => $request->specialty,
+                                'company' => $request->company,
+                                'address_line1' => $request->company_address_line1,
+                                'address_line2' => $request->company_address_line2,
+                                'city' => $request->city,
+                                // 'updated_by' => $request->updated_by,
+                                // 'updated_on' => now()
+                            ]);
+
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'Record successfully updated!'
+                    ], 200);
+
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
