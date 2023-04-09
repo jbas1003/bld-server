@@ -33,13 +33,14 @@ class EventTypeController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'event_type_name' => 'required|string|max:191',
+                'event_type_category' => 'nullable|integer',
                 'created_by' => 'required|integer'
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 422,
-                    'errors' => $validator->message()
+                    'message' => $validator->message()
                 ], 422);
             } else {
                 $ifExist = EventType::where('event_type_name', $request->event_type_name)->first();
@@ -47,11 +48,12 @@ class EventTypeController extends Controller
                 if ($ifExist) {
                     return response()->json([
                         'status' => 422,
-                        'errors' => 'Record already existed.'
+                        'message' => 'Record already existed.'
                     ], 422);
                 } else {
                     $eventType = EventType::create([
                         'event_type_name' => $request->event_type_name,
+                        'event_type_category' => $request->event_type_category,
                         'created_by' => $request->created_by,
                         'created_on' => now()
                     ]);
@@ -64,7 +66,7 @@ class EventTypeController extends Controller
                     } else {
                         return response()->json([
                             'status' => 500,
-                            'errors' => 'Server Error.'
+                            'message' => 'Server Error.'
                         ], 500);
                     }
                 }
@@ -79,7 +81,23 @@ class EventTypeController extends Controller
      */
     public function show(EventType $eventType)
     {
-        //
+        try {
+           $eventTypes = EventType::all();
+
+           if ($eventTypes->count() > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'body' => $eventTypes
+                ]);
+           } else {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => 'No records found.'
+                ]);
+           }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -101,8 +119,17 @@ class EventTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EventType $eventType)
+    public function destroy(EventType $eventType, Request $request)
     {
-        //
+        try {
+            $eventType = EventTypes::where('event_type_id', $request->event_type_id)->delete();
+            
+            return response()->json([
+                'status' => 200,
+                'message' => 'Record successfully deleted.'
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
