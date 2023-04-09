@@ -12,6 +12,7 @@ class EventType extends Model
     protected $table = 'tblevent_types';
     protected $fillable = [
         'event_type_name',
+        'event_type_category',
         'created_by',
         'created_on',
     ];
