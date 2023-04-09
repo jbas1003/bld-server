@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('attendance_id');
             $table->string('member_id');
             $table->string('event_id');
-            $table->string('event_date')->nullable();
+            $table->string('status');
             $table->string('created_by');
             $table->string('created_on');
         });
