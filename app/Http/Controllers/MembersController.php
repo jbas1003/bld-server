@@ -316,7 +316,7 @@ class MembersController extends Controller
                                 ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.nickname',
                                 'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblmembers.spouse_member_id',
                                 'tblmembers.religion', 'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city',
-                                'tblevents.event_name', 'tblevents.event_subtitle')
+                                'tblevents.event_name', 'tblevents.event_subtitle', 'tblattendances.status')
                                 ->get();
               
             if ($getAllMembers->count() > 0) {
