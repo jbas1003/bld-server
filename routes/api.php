@@ -73,6 +73,7 @@ Route::post('events', [EventsController::class, 'store']);
 
 Route::get('event_types', [EventTypeController::class, 'show']);
 Route::post('event_types', [EventTypeController::class, 'store']);
+Route::delete('event_types', [EventTypeController::class, 'destroy']);
 
 // END: Event Types Routes
 
