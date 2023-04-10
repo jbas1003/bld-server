@@ -92,7 +92,7 @@ class EventTypeController extends Controller
            } else {
                 return response()->json([
                     'status' => 422,
-                    'errors' => 'No records found.'
+                    'message' => 'No records found.'
                 ]);
            }
         } catch (\Throwable $th) {
@@ -113,21 +113,70 @@ class EventTypeController extends Controller
      */
     public function update(Request $request, EventType $eventType)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'event_type_name' => 'required|string|max:191',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validator->message()
+                ], 422);
+            } else {
+                $ifExist = EventType::where('event_type_name', $request->event_type_name)->first();
+
+                if ($ifExist) {
+                    return response()->json([
+                        'status' => 422,
+                        'message' => 'No changes were made.'
+                    ], 422);
+                } else {
+                    $eventType = EventType::find($request->event_type_id)
+                                ->update([
+                                    'event_type_name' => $request->event_type_name
+                                ]);
+                    
+                    if ($eventType) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Record successfully updated!'
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 500,
+                            'message' => 'Server Error.'
+                        ], 500);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EventType $eventType, Request $request)
+    public function destroy(Request $request)
     {
         try {
-            $eventType = EventTypes::where('event_type_id', $request->event_type_id)->delete();
+            $eventType = EventType::find($request->event_type_id);
             
-            return response()->json([
-                'status' => 200,
-                'message' => 'Record successfully deleted.'
-            ]);
+            if ($eventType) {
+                $eventType->delete();
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Record successfully deleted.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'There was a problem deleting the record.'
+                ]);
+            }
+            
         } catch (\Throwable $th) {
             throw $th;
         }
