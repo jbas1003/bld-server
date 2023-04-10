@@ -66,6 +66,9 @@ Route::post('emails', [EmailsController::class, 'store']);
 
 Route::get('events', [EventsController::class, 'show']);
 Route::post('events', [EventsController::class, 'store']);
+Route::put('events', [EventsController::class, 'update']);
+Route::delete('events', [EventsController::class, 'destroy']);
+
 
 // END: Events Routes
 
@@ -73,6 +76,7 @@ Route::post('events', [EventsController::class, 'store']);
 
 Route::get('event_types', [EventTypeController::class, 'show']);
 Route::post('event_types', [EventTypeController::class, 'store']);
+Route::put('event_types', [EventTypeController::class, 'update']);
 Route::delete('event_types', [EventTypeController::class, 'destroy']);
 
 // END: Event Types Routes
