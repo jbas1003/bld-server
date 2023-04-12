@@ -93,6 +93,8 @@ Route::delete('member_status', [MemberStatusController::class, 'destroy']);
 
 // START: Member Accounts Routes
 
+Route::post('member_accounts/login', [MemberAccountsController::class, 'login']);
+
 Route::get('member_accounts', [MemberAccountsController::class, 'show']);
 Route::post('member_accounts', [MemberAccountsController::class, 'store']);
 Route::put('member_accounts', [MemberAccountsController::class, 'update']);
