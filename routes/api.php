@@ -10,6 +10,7 @@ use App\Http\Controllers\EventTypeController;
 use App\Http\Controllers\OccupationController;
 use App\Http\Controllers\MemberStatusController;
 use App\Http\Controllers\ContactNumbersController;
+use App\Http\Controllers\MemberAccountsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,3 +88,12 @@ Route::get('member_status', [MemberStatusController::class, 'show']);
 Route::post('member_status', [MemberStatusController::class, 'store']);
 
 // END: Member Status Routes
+
+// START: Member Accounts Routes
+
+Route::get('member_accounts', [MemberAccountsController::class, 'show']);
+Route::post('member_accounts', [MemberAccountsController::class, 'store']);
+Route::put('member_accounts', [MemberAccountsController::class, 'update']);
+Route::delete('member_accounts', [MemberAccountsController::class, 'destroy']);
+
+// END: Member Accounts Routes
