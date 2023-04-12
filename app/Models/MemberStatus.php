@@ -10,6 +10,7 @@ class MemberStatus extends Model
     use HasFactory;
 
     protected $table = 'tblmember_statuses';
+    protected $primaryKey = 'memberStatus_id';
     protected $fillable = [
         'status',
         'created_by',
