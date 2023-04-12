@@ -5,10 +5,46 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\MemberAccounts;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class MemberAccountsController extends Controller
 {
+    /**
+     * Login
+     */
+    public function login(Request $request) {
+        try {
+            $account = MemberAccounts::where('username', $request->username)
+            ->join('tblmembers', 'tblmember_accounts.member_id', '=', 'tblmembers.member_id')
+            ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+                    'tblmember_accounts.password')
+            ->first();
+
+            if ($account) {
+                if (Hash::check($request->password, $account->password)) {
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'success!',
+                        'body' => $account
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => 422,
+                        'message' => 'Incorrect password!'
+                    ], 422);
+                }
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Incorrect username!'
+                ], 422);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -55,7 +91,7 @@ class MemberAccountsController extends Controller
                     $account = MemberAccounts::create([
                         'member_id' => $request->member_id,
                         'username' => $request->username,
-                        'password' => $request->password,
+                        'password' => Hash::make($request->password, ['rounds' => 8]),
                         'created_by' => $request->created_by,
                         'created_on' => now()
                     ]);
