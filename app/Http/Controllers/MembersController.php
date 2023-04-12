@@ -327,7 +327,7 @@ class MembersController extends Controller
             } else {
                 return response()->json([
                     'status' => 422,
-                    'errors' => 'No records found.'
+                    'message' => 'No records found.'
                 ], 422);
             }
 
