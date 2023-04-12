@@ -86,6 +86,8 @@ Route::delete('event_types', [EventTypeController::class, 'destroy']);
 
 Route::get('member_status', [MemberStatusController::class, 'show']);
 Route::post('member_status', [MemberStatusController::class, 'store']);
+Route::put('member_status', [MemberStatusController::class, 'update']);
+Route::delete('member_status', [MemberStatusController::class, 'destroy']);
 
 // END: Member Status Routes
 
