@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('tbloccupations', function (Blueprint $table) {
             $table->id('occupation_id');
-            $table->string('occupation_name');
-            $table->string('specialty');
-            $table->string('company');
-            $table->string('address_id');
+            $table->string('occupation_name')->nullable();
+            $table->string('specialty')->nullable();
+            $table->string('company')->nullable();
+            $table->string('address_line1')->nullable();
+            $table->string('address_line2')->nullable();
+            $table->string('city')->nullable();
             $table->string('created_by');
             $table->string('created_on');
         });

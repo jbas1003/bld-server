@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tblevent_types', function (Blueprint $table) {
             $table->id('event_type_id');
             $table->string('event_type_name');
+            $table->integer('event_type_category')->nullable();
             $table->string('created_by');
             $table->string('created_on');
         });
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('event_types');
+        Schema::dropIfExists('tblevent_types');
     }
 };

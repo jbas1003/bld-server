@@ -10,12 +10,17 @@ class Events extends Model
     use HasFactory;
 
     protected $table = 'tblevents';
+    protected $primaryKey = 'event_id';
     protected $fillable = [
         'event_name',
+        'event_subtitle',
+        'start_date',
+        'end_date',
+        'status',
         'event_type_id',
         'created_by',
-        'updated_by',
+        'created_on'
     ];
 
-    protected $timestamps = false;
+    public $timestamps = false;
 }

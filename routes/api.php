@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailsController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\AddressesController;
 use App\Http\Controllers\EventTypeController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\ContactNumbersController;
 
 Route::get('members', [MembersController::class, 'show']);
 Route::post('members', [MembersController::class, 'store']);
+Route::put('members', [MembersController::class, 'update']);
 
 // END: Members Routes
 
@@ -60,10 +62,22 @@ Route::post('emails', [EmailsController::class, 'store']);
 
 // END: Emails Routes
 
+// START: Events Routes
+
+Route::get('events', [EventsController::class, 'show']);
+Route::post('events', [EventsController::class, 'store']);
+Route::put('events', [EventsController::class, 'update']);
+Route::delete('events', [EventsController::class, 'destroy']);
+
+
+// END: Events Routes
+
 // START: Event Types Routes
 
 Route::get('event_types', [EventTypeController::class, 'show']);
 Route::post('event_types', [EventTypeController::class, 'store']);
+Route::put('event_types', [EventTypeController::class, 'update']);
+Route::delete('event_types', [EventTypeController::class, 'destroy']);
 
 // END: Event Types Routes
 

@@ -43,7 +43,7 @@ class MemberStatusController extends Controller
                     'errors' => $request->message()
                 ], 422);
             } else {
-                $ifExist = MemberStatus::where(`LOWER('status')`, Str::lower($request->status));
+                $ifExist = MemberStatus::where('status', Str::lower($request->status));
     
                 if ($ifExist) {
                     return response()->json([

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ContactInfo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Occupation extends Model
 {
@@ -14,10 +15,16 @@ class Occupation extends Model
         'occupation_name',
         'specialty',
         'company',
-        'address_id',
+        'address_line1',
+        'address_line2',
+        'city',
         'created_by',
         'created_on',
     ];
 
     public $timestamps = false;
+
+    public function contactInfo ():BelongsTo {
+        return $this->belongsTo(ContactInfo::class);
+    }
 }
