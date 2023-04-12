@@ -40,15 +40,15 @@ class MemberStatusController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 422,
-                    'errors' => $request->message()
+                    'errors' => $request->messages()
                 ], 422);
             } else {
-                $ifExist = MemberStatus::where('status', Str::lower($request->status));
-    
-                if ($ifExist) {
+                $ifExist = MemberStatus::where('status', '=', Str::lower($request->status))->get();
+                
+                if ($ifExist->count() > 0) {
                     return response()->json([
                         'status' => 422,
-                        'errors' => 'Record already exist.'
+                        'message' => 'Record already exist.'
                     ], 422);
                 } else {
                     $memberStatus = MemberStatus::create([
@@ -64,9 +64,9 @@ class MemberStatusController extends Controller
                         ], 200);
                     } else {
                         return response()->json([
-                            'status' => 500,
-                            'errors' => 'Server Error.'
-                        ], 500);
+                            'status' => 422,
+                            'message' => 'Server Error.'
+                        ], 422);
                     }
                 }
             }
@@ -80,7 +80,22 @@ class MemberStatusController extends Controller
      */
     public function show(MemberStatus $memberStatus)
     {
-        //
+        try {
+            if ($memberStatus) {
+                $status = MemberStatus::all();
+                return response()->json([
+                    'status' => 200,
+                    'body' => $status
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'No records found.'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -96,14 +111,69 @@ class MemberStatusController extends Controller
      */
     public function update(Request $request, MemberStatus $memberStatus)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'status' => 'required|string|max:191',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => $validator->messages()
+                ], 422);
+            } else {
+                $updateStatus = MemberStatus::find($request->memberStatus_id);
+                
+                if (!$updateStatus) {
+                    return response()->json([
+                        'status' => 422,
+                        'message' => 'No record found.'
+                    ], 422);
+                } else {
+                    $updateStatus->update([
+                        'status' => $request->status
+                    ]);
+    
+                    if ($memberStatus) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Record successfully updated!'
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 422,
+                            'message' => 'Server Error.'
+                        ], 422);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(MemberStatus $memberStatus)
+    public function destroy(MemberStatus $memberStatus, Request $request)
     {
-        //
+        try {
+            $delStatus = MemberStatus::find($request->memberStatus_id)
+                        ->delete();
+
+            if($delStatus) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Record was deleted successfully.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'A problem was encountered while deleting the record. Please contact system administrator.'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
