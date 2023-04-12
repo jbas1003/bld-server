@@ -86,10 +86,7 @@ class MemberAccountsController extends Controller
         
         try {
             if ($memberAccounts->count() > 0) {
-                $accounts = MemberAccounts::join('tblmembers', 'tblmember_accounts.member_id', '=', 'tblmembers.member_id')
-                                            ->select('tblmembers.member_id','tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-                                                    'tblmember_accounts.username')
-                                            ->get();
+                $accounts = MemberAccounts::all();
                 return response()->json([
                     'status' => 200,
                     'body' => $accounts
