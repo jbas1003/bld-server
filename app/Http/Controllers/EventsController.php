@@ -32,7 +32,7 @@ class EventsController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_name' => 'required|string:max:200',
+                'event_name' => 'required|string|max:200',
                 'event_subtitle' => 'nullable|string|max:200',
                 'start_date' => 'nullable|string|max:200',
                 'end_date' => 'nullable|string|max:200',
