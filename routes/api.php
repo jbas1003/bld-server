@@ -7,6 +7,7 @@ use App\Http\Controllers\EventsController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\AddressesController;
 use App\Http\Controllers\EventTypeController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\OccupationController;
 use App\Http\Controllers\MemberStatusController;
 use App\Http\Controllers\ContactNumbersController;
@@ -101,3 +102,11 @@ Route::put('member_accounts', [MemberAccountsController::class, 'update']);
 Route::delete('member_accounts', [MemberAccountsController::class, 'destroy']);
 
 // END: Member Accounts Routes
+
+// START: Attendance Routes
+
+Route::get('attendances', [AttendanceController::class, 'show']);
+Route::post('show_attendances', [AttendanceController::class, 'showAttendance']);
+Route::post('attendances', [AttendanceController::class, 'store']);
+
+// END: Attendance Routes
