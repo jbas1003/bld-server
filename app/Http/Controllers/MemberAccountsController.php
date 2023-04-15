@@ -17,7 +17,7 @@ class MemberAccountsController extends Controller
         try {
             $account = MemberAccounts::where('username', $request->username)
             ->join('tblmembers', 'tblmember_accounts.member_id', '=', 'tblmembers.member_id')
-            ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+            ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
                     'tblmember_accounts.password')
             ->first();
 
