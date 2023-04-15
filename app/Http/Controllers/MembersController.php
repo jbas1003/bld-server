@@ -307,14 +307,12 @@ class MembersController extends Controller
 
         try {
             $getAllMembers = ContactInfo::join('tblmembers', 'tblcontact_infos.member_id', '=', 'tblmembers.member_id')
-                                // ->join('tblmembers As tblspouse', 'tblmembers.member_id', '=', 'tblspouse.spouse_member_id')
                                 ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
                                 ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
                                 ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
                                 ->join('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                                 ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.nickname',
                                 'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status',
-                                // 'tblmembers.spouse_member_id', 'tblspouse.first_name', 'tblspouse.middle_name', 'tblspouse.last_name',
                                 'tblmembers.religion', 'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city')
                                 ->get();
               
