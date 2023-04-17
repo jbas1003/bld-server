@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Members;
 use Illuminate\Http\Request;
 use App\Models\MemberAccounts;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -121,18 +123,30 @@ class MemberAccountsController extends Controller
     {
         
         try {
-            if ($memberAccounts->count() > 0) {
-                $accounts = MemberAccounts::all();
-                return response()->json([
-                    'status' => 200,
-                    'body' => $accounts
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 422,
-                    'message' => 'No records found.'
-                ]);
-            }
+            // if ($memberAccounts->count() > 0) {
+            //     $accounts = MemberAccounts::all();
+            //     return response()->json([
+            //         'status' => 200,
+            //         'body' => $accounts
+            //     ], 200);
+            // } else {
+            //     return response()->json([
+            //         'status' => 422,
+            //         'message' => 'No records found.'
+            //     ]);
+            // }
+
+            $accounts = Members::leftjoin('tblmember_accounts', function($join) {
+                                    $join->on('tblmembers.member_id', '=', 'tblmember_accounts.member_id');
+                                    })
+                                ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+                                    'tblmember_accounts.memberAccount_id', DB::raw('IFNULL(tblmember_accounts.username, "") As username'))
+                                ->get();
+                                
+            return response()->json([
+                'status' => 200,
+                'body' => $accounts
+            ], 200);
         } catch (\Throwable $th) {
             throw $th;
         }
