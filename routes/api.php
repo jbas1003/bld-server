@@ -108,5 +108,6 @@ Route::delete('member_accounts', [MemberAccountsController::class, 'destroy']);
 Route::get('attendances', [AttendanceController::class, 'show']);
 Route::post('show_attendances', [AttendanceController::class, 'showAttendance']);
 Route::post('attendances', [AttendanceController::class, 'store']);
+Route::delete('attendances', [AttendanceController::class, 'destroy']);
 
 // END: Attendance Routes
