@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('tblemergency_contacts', function (Blueprint $table) {
             $table->id('emergencyContact_id');
-            $table->string('emergencyContactInfo_id');
-            $table->string('member_id');
-            $table->string('created_by');
+            $table->integer('emergencyContactInfo_id');
+            $table->integer('member_id');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }
