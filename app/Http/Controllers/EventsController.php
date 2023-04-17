@@ -34,6 +34,7 @@ class EventsController extends Controller
             $validator = Validator::make($request->all(), [
                 'event_name' => 'required|string|max:200',
                 'event_subtitle' => 'nullable|string|max:200',
+                'location' => 'nullable|string|max:300',
                 'start_date' => 'nullable|string|max:200',
                 'end_date' => 'nullable|string|max:200',
                 'status' => 'nullable|string|max:200',
@@ -58,6 +59,7 @@ class EventsController extends Controller
                     $event = Events::create([
                         'event_name' => $request->event_name,
                         'event_subtitle' => $request->event_subtitle,
+                        'location' => $request->location,
                         'start_date' => $request->start_date,
                         'end_date' => $request->end_date,
                         'status' => $request->status,
@@ -92,8 +94,9 @@ class EventsController extends Controller
         try {
             if ($events->count() > 0) {
                 $newEvents = Events::join('tblevent_types', 'tblevent_types.event_type_id', '=', 'tblevents.event_type_id')
-                                    ->select('tblevents.event_id', 'tblevents.event_name', 'tblevents.event_subtitle', 'tblevents.start_date',
-                                            'tblevents.end_date', 'tblevents.status', 'tblevents.event_type_id', 'tblevent_types.event_type_name')
+                                    ->select('tblevents.event_id', 'tblevents.event_name', 'tblevents.event_subtitle',
+                                            'tblevents.location', 'tblevents.start_date', 'tblevents.end_date',
+                                            'tblevents.status', 'tblevents.event_type_id', 'tblevent_types.event_type_name')
                                     ->get();
                 
                 return response()->json([
@@ -128,6 +131,7 @@ class EventsController extends Controller
             $validator = Validator::make($request->all(), [
                 'event_name' => 'required|string:max:200',
                 'event_subtitle' => 'nullable|string|max:200',
+                'location' => 'nullable|string|max:300',
                 'start_date' => 'nullable|string|max:200',
                 'end_date' => 'nullable|string|max:200',
                 'status' => 'nullable|string|max:200',
@@ -152,6 +156,7 @@ class EventsController extends Controller
                             ->update([
                                 'event_name' => $request->event_name,
                                 'event_subtitle' => $request->event_subtitle,
+                                'location' => $request->location,
                                 'start_date' => $request->start_date,
                                 'end_date' => $request->end_date,
                                 'status' => $request->status,
