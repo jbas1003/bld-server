@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('address_line1')->nullable();
             $table->string('address_line2')->nullable();
             $table->string('city')->nullable();
-            $table->string('created_by');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }
