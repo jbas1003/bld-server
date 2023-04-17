@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tblmember_statuses', function (Blueprint $table) {
             $table->id('memberStatus_id');
             $table->string('status');
-            $table->string('created_by');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }
