@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('tblattendances', function (Blueprint $table) {
             $table->id('attendance_id');
-            $table->string('member_id');
-            $table->string('event_id');
+            $table->integer('member_id');
+            $table->integer('event_id');
             $table->string('status')->nullable();
-            $table->string('created_by');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }
