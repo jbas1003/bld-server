@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('tblmember_accounts', function (Blueprint $table) {
             $table->id('memberAccount_id');
-            $table->string('member_id');
+            $table->integer('member_id');
             $table->string('username');
             $table->string('password');
-            $table->string('created_by');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }
