@@ -15,13 +15,18 @@ return new class extends Migration
             $table->id('event_id');
             $table->string('event_name');
             $table->string('event_subtitle')->nullable();
+            $table->string('location')->nullable();
             $table->string('start_date')->nullable();
             $table->string('end_date')->nullable();
             $table->string('status');
-            $table->string('event_type_id');
-            $table->string('created_by');
+            $table->integer('event_type_id');
+            $table->integer('created_by');
             $table->string('created_on');
         });
+
+        // Schema::table('tblevents', function (Blueprint $table) {
+        //     $table->string('location')->nullable()->after('event_subtitle');
+        // });
     }
 
     /**
@@ -29,6 +34,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::table('events', function (Blueprint $table) {
+            //
+        });
     }
 };
