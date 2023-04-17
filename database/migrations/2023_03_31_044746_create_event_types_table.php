@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('event_type_id');
             $table->string('event_type_name');
             $table->integer('event_type_category')->nullable();
-            $table->string('created_by');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }
