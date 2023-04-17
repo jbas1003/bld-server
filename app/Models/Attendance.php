@@ -10,6 +10,7 @@ class Attendance extends Model
     use HasFactory;
 
     protected $table = 'tblattendances';
+    protected $primaryKey = 'attendance_id';
     protected $fillable = [
         'member_id',
         'event_id',
