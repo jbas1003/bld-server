@@ -92,6 +92,10 @@ class EventsController extends Controller
      */
     public function show(Events $events, Request $request)
     {
+        //
+    }
+
+    public function getEvents(Events $events, Request $request) {
         try {
             if ($events->count() > 0) {
                 
@@ -117,7 +121,7 @@ class EventsController extends Controller
                     } else {
                         return response()->json([
                             'status' => 422,
-                            'message' => 'Fail'
+                            'message' => 'No records found.'
                         ], 422);
                     }
                 } else {
