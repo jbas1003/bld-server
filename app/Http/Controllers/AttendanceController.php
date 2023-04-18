@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Members;
 use App\Models\Attendance;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -29,15 +32,110 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(),[
+                'member_id' => 'required|integer',
+                'event_id' => 'required|integer',
+                'status' => 'nullable|string',
+                'created_by' => 'required|integer'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validator->messages()
+                ]);
+            } else {
+                $memberExist = Attendance::where('member_id', $request->member_id)
+                                        ->where('event_id', $request->event_id)
+                                        ->where('status', $request->status)
+                                        ->get();
+
+                if ($memberExist->count() > 0) {
+                    return response()->json([
+                        'status' => 422,
+                        'message' => 'This person already has an attendance record for this event.'
+                    ]);
+                } else {
+                    
+                    $attendance = Attendance::create([
+                        'member_id' => $request->member_id,
+                        'event_id' => $request->event_id,
+                        'status' => $request->status,
+                        'created_by' => $request->created_by,
+                        'created_on' => now()
+                    ]);
+
+                    if ($attendance) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Attendance record added successfully!'
+                        ]);
+                    } else {
+                        return response()->json([
+                            'status' => 422,
+                            'message' => 'A problem was encountered while creating attendance record. Please contact system administrator.'
+                        ]);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Attendance $attendance)
+    public function show(Request $request)
     {
-        //
+        // 
+    }
+
+    public function showAttendance(Attendance $attendance, Request $request) {
+        try {                 
+            $eventId = $request->event_id;
+            // $getAttendance = Members::leftjoin('tblattendances', function($join) use ($eventId) {
+            //     $join->on('tblmembers.member_id', '=', 'tblattendances.member_id')
+            //     ->where('tblattendances.event_id', '=', $eventId);
+            // })
+            // ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+            //         'nickname', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblmembers.spouse_member_id',
+            //         'religion', 'tblmembers.baptism', 'tblmembers.confirmation', 'tblmembers.member_status_id',
+            //         DB::raw('IFNULL(tblattendances.status, "") As status'))
+            // ->get();
+
+            $getAttendance = Members::join('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
+                                    ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                    ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                    ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                    ->join('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
+                                    ->leftjoin('tblattendances', function($join) use ($eventId) {
+                                        $join->on('tblmembers.member_id', '=', 'tblattendances.member_id')
+                                        ->where('tblattendances.event_id', '=', $eventId);
+                                    })
+                                    ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.nickname',
+                                    'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblmembers.spouse_member_id',
+                                    'tblmembers.religion', 'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city',
+                                     'tbloccupations.occupation_name', 'tbloccupations.specialty', 'tbloccupations.company', 'tbloccupations.address_line1 As work_address_line1',
+                                    'tbloccupations.address_line2 As work_address_line2', 'tbloccupations.city As work_city',
+                                    DB::raw('IFNULL(tblattendances.status, "") As status'), DB::raw('IFNULL(tblattendances.attendance_id, "") As attendance_id'))
+                                    ->get();
+            
+            if ($getAttendance->count() > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'body' => $getAttendance
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'No attendance records yet.'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -59,8 +157,25 @@ class AttendanceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Attendance $attendance)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $attendance = Attendance::find($request->attendance_id);
+                
+            if ($attendance) {
+                $attendance->delete();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Attendance reset successful!'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Attendance reset unsuccessful. A problem was encountered while trying to reset attedance. Please contact system administrator.'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

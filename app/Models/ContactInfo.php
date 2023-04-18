@@ -24,8 +24,8 @@ class ContactInfo extends Model
 
     public $timestamps = false;
 
-    public function members(): HasOne {
-        return $this->hasOne(Members::class);
+    public function members(): HasMany {
+        return $this->hasMany(Members::class);
     }
 
     public function addresses(): HasMany {

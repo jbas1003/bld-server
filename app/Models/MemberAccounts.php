@@ -9,7 +9,8 @@ class MemberAccounts extends Model
 {
     use HasFactory;
 
-    protected $table = ' tblmember_accounts';
+    protected $table = 'tblmember_accounts';
+    protected $primaryKey = 'memberAccount_id';
     protected $fillable = [
         'member_id',
         'username',
@@ -18,5 +19,5 @@ class MemberAccounts extends Model
         'created_on'
     ];
 
-    protected $timestamps = false;
+    public $timestamps = false;
 }

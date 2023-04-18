@@ -7,9 +7,11 @@ use App\Http\Controllers\EventsController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\AddressesController;
 use App\Http\Controllers\EventTypeController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\OccupationController;
 use App\Http\Controllers\MemberStatusController;
 use App\Http\Controllers\ContactNumbersController;
+use App\Http\Controllers\MemberAccountsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,5 +87,27 @@ Route::delete('event_types', [EventTypeController::class, 'destroy']);
 
 Route::get('member_status', [MemberStatusController::class, 'show']);
 Route::post('member_status', [MemberStatusController::class, 'store']);
+Route::put('member_status', [MemberStatusController::class, 'update']);
+Route::delete('member_status', [MemberStatusController::class, 'destroy']);
 
 // END: Member Status Routes
+
+// START: Member Accounts Routes
+
+Route::post('member_accounts/login', [MemberAccountsController::class, 'login']);
+
+Route::get('member_accounts', [MemberAccountsController::class, 'show']);
+Route::post('member_accounts', [MemberAccountsController::class, 'store']);
+Route::put('member_accounts', [MemberAccountsController::class, 'update']);
+Route::delete('member_accounts', [MemberAccountsController::class, 'destroy']);
+
+// END: Member Accounts Routes
+
+// START: Attendance Routes
+
+Route::get('attendances', [AttendanceController::class, 'show']);
+Route::post('show_attendances', [AttendanceController::class, 'showAttendance']);
+Route::post('attendances', [AttendanceController::class, 'store']);
+Route::delete('attendances', [AttendanceController::class, 'destroy']);
+
+// END: Attendance Routes

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tblcontact_numbers', function (Blueprint $table) {
             $table->id('contactNumber_id');
             $table->string('mobile');
-            $table->string('created_by');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }

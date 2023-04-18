@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\ContactInfo;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,7 @@ class Members extends Authenticatable
     use HasFactory, HasApiTokens, Notifiable;
 
     protected $table = 'tblmembers';
+    protected $primaryKey = 'member_id';
     protected $fillable = [
         'first_name',
         'middle_name',

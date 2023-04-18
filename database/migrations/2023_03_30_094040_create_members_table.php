@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('religion')->nullable();
             $table->string('baptism')->nullable();
             $table->string('confirmation')->nullable();
-            $table->string('member_status_id');
-            $table->string('created_by');
+            $table->integer('member_status_id')->nullable();
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }

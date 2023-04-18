@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('tblcontact_infos', function (Blueprint $table) {
             $table->id('contactInfo_id');
-            $table->string('member_id');
-            $table->string('address_id');
-            $table->string('contactNumber_id');
-            $table->string('email_id');
-            $table->string('occupation_id');
-            $table->string('created_by');
+            $table->integer('member_id');
+            $table->integer('address_id');
+            $table->integer('contactNumber_id');
+            $table->integer('email_id');
+            $table->integer('occupation_id');
+            $table->integer('created_by');
             $table->string('created_on');
         });
     }
