@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Events;
+use App\Models\EventType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -89,25 +90,53 @@ class EventsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Events $events)
+    public function show(Events $events, Request $request)
     {
         try {
             if ($events->count() > 0) {
-                $newEvents = Events::join('tblevent_types', 'tblevent_types.event_type_id', '=', 'tblevents.event_type_id')
+                
+                if ($request->all()) {
+                    $eventCategory = EventType::where('event_type_name', $request->event_category)
+                    ->select('event_type_id')
+                    ->first();
+                    
+                    $eventType = EventType::where('event_type_category', $eventCategory->event_type_id)
+                    ->select('event_type_id')
+                    ->first();
+
+                    $events = Events::where('event_type_id', $eventType->event_type_id)
+                                        ->select('event_type_id', 'start_date', 'status')
+                                        ->get();
+
+                    if ($events->count() > 0) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Success!',
+                            'body' => $events
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => 422,
+                            'message' => 'Fail'
+                        ], 422);
+                    }
+                } else {
+                    $newEvents = Events::join('tblevent_types', 'tblevent_types.event_type_id', '=', 'tblevents.event_type_id')
                                     ->select('tblevents.event_id', 'tblevents.event_name', 'tblevents.event_subtitle',
                                             'tblevents.location', 'tblevents.start_date', 'tblevents.end_date',
                                             'tblevents.status', 'tblevents.event_type_id', 'tblevent_types.event_type_name')
                                     ->get();
                 
-                return response()->json([
-                    'status' => 200,
-                    'body' => $newEvents
-                ], 200);
-                } else {
                     return response()->json([
-                        'status' => 422,
-                        'message' => 'No Records Found.'
-                    ]);
+                        'status' => 200,
+                        'body' => $newEvents
+                    ], 200);
+                }
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'No Records Found.'
+                ]);
             }
         } catch (\Throwable $th) {
             throw $th;
