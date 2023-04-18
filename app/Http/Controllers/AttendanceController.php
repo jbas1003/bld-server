@@ -90,6 +90,10 @@ class AttendanceController extends Controller
      */
     public function show(Request $request)
     {
+        //
+    }
+
+    public function attendanceList(Attendance $attendance, Request $request) {
         try {
             $eventCategory = EventType::where('event_type_name', $request->event_category)
                 ->select('event_type_id')
@@ -119,7 +123,7 @@ class AttendanceController extends Controller
             } else {
                 return response()->json([
                     'status' => 422,
-                    'message' => 'Fail.'
+                    'message' => 'No records Found.'
                 ]);
             }
         } catch (\Throwable $th) {
