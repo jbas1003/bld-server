@@ -67,6 +67,7 @@ Route::post('emails', [EmailsController::class, 'store']);
 // START: Events Routes
 
 Route::get('events', [EventsController::class, 'show']);
+Route::post('get_events', [EventsController::class, 'getEvents']);
 Route::post('events', [EventsController::class, 'store']);
 Route::put('events', [EventsController::class, 'update']);
 Route::delete('events', [EventsController::class, 'destroy']);
@@ -106,6 +107,7 @@ Route::delete('member_accounts', [MemberAccountsController::class, 'destroy']);
 // START: Attendance Routes
 
 Route::get('attendances', [AttendanceController::class, 'show']);
+Route::post('attendance_list', [AttendanceController::class, 'attendanceList']);
 Route::post('show_attendances', [AttendanceController::class, 'showAttendance']);
 Route::post('attendances', [AttendanceController::class, 'store']);
 Route::delete('attendances', [AttendanceController::class, 'destroy']);
