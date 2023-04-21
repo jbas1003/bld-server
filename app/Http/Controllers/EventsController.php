@@ -109,20 +109,10 @@ class EventsController extends Controller
                     ->select('event_type_id')
                     ->first();
 
-                    // $events = Events::when(($request->event_id === null & $request->event_id === ""), function($events) use ($eventType){
-                    //                     $events->where('event_type_id', $eventType->event_type_id)
-                    //                     ->select('event_type_id', 'start_date', 'status');
-                    //                 })
-                    //                 ->when(($request->event_id !== null & $request->event_id !== ""), function($events) use ($request){
-                    //                     $events->where('event_id', $request->event_id)
-                    //                     ->select('event_type_id', 'start_date', 'status');
-                    //                 })
-                    //                 ->get();
-
                     $events = Events::where('event_type_id', $eventType->event_type_id)
-                                    // ->when(($request->event_id !== null & $request->event_id !== ""), function($events) use ($request){
-                                    //     $events->where('event_id', $request->event_id);
-                                    // })
+                                    ->when(($request->event_id !== null & $request->event_id !== ""), function($events) use ($request){
+                                        $events->where('event_id', $request->event_id);
+                                    })
                                 ->select('event_type_id', 'start_date', 'status', 'event_id')
                                 ->get();
                     
