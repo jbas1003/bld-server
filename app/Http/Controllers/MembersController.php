@@ -45,7 +45,7 @@ class MembersController extends Controller
                 // START: Table Members Data
 
                 'first_name' => 'required|string|max:191',
-                'middle_name' => 'required|string|max:191',
+                'middle_name' => 'nullable|string|max:191',
                 'last_name' => 'required|string|max:191',
                 'nickname' => 'nullable|string|max:191',
                 'birthday' => 'nullable|string|max:191',
@@ -321,7 +321,7 @@ class MembersController extends Controller
                 // START: Table Members Data
 
                 'first_name' => 'required|string|max:191',
-                'middle_name' => 'required|string|max:191',
+                'middle_name' => 'nullable|string|max:191',
                 'last_name' => 'required|string|max:191',
                 'nickname' => 'nullable|string|max:191',
                 'birthday' => 'nullable|string|max:191',
