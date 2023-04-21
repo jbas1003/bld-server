@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tblemails', function (Blueprint $table) {
             $table->id('email_id');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->integer('created_by');
             $table->string('created_on');
         });
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('emails');
+        // Schema::dropIfExists('emails');
     }
 };
