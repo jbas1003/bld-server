@@ -109,9 +109,11 @@ class AttendanceController extends Controller
                                     ->when($request->event_date, function($attendance) use ($request){
                                         $attendance->where('tblevents.start_date', $request->event_date);
                                     })
+                                    ->when($request->event_id, function($attendance) use ($request){
+                                        $attendance->where('tblevents.event_id', $request->event_id);                                    })
                                     ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
                                             'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblattendances.status',
-                                            'tblevents.event_subtitle', 'tblevents.start_date')
+                                            'tblevents.event_subtitle', 'tblevents.start_date', 'tblevents.event_id')
                                     ->get();
 
             if ($attendance->count() > 0) {
