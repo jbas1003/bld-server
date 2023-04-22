@@ -99,31 +99,6 @@ class AttendanceController extends Controller
                 ->select('event_type_id')
                 ->first();
                     
-            // $eventType = EventType::where('event_type_category', $eventCategory->event_type_id)
-            //     ->select('event_type_id')
-            //     ->first();
-
-            // $attendance = Attendance::join('tblmembers', 'tblattendances.member_id', '=', 'tblmembers.member_id')
-            //                         ->join('tblevents', 'tblattendances.event_id', '=', 'tblevents.event_id')
-            //                         ->join('tblevent_types', 'tblevents.event_type_id', '=', 'tblevent_types.event_type_id')
-            //                         ->where('tblevent_types.event_type_category', $eventCategory->event_type_category)
-            //                         ->when($request->event_date, function($attendance) use ($request){
-            //                             $attendance->where('tblevents.start_date', $request->event_date);
-            //                         })
-            //                         ->when($request->event_id, function($attendance) use ($request){
-            //                             $attendance->where('tblevents.event_id', $request->event_id);                                    })
-            //                         ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-            //                                 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblattendances.status',
-            //                                 'tblevents.event_subtitle', 'tblevents.start_date', 'tblevents.event_id')
-            //                         ->get();
-
-            // $attendance = EventType::where('event_type_category', $eventCategory->event_type_id)
-            //                         ->join('tblevents', 'tblevent_types.event_type_id', '=', 'tblevents.event_type_id')
-            //                         ->leftJoin('tblattendances', function($attendances) {
-            //                                 $attendances->on('tblevents.event_id', '=', 'tblattendances.event_id');
-            //                         })
-            //                         ->get();
-
             $attendance = Attendance::join('tblmembers', 'tblattendances.member_id', '=', 'tblmembers.member_id')
                                     ->leftJoin('tblevents', function($events) {
                                         $events->on('tblattendances.event_id', '=', 'tblevents.event_id')
