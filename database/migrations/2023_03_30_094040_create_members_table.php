@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('tblmembers', function (Blueprint $table) {
             $table->id('member_id');
-            $table->string('first_name');
-            $table->string('middle_name');
-            $table->string('last_name');
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('nickname')->nullable();
             $table->string('birthday')->nullable();
             $table->string('gender')->nullable();
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Schema::dropIfExists('members');
+        Schema::dropIfExists('tblmembers');
     }
 };
