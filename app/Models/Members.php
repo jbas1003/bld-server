@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Members;
 use App\Models\ContactInfo;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;

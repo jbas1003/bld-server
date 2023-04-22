@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Members;
+use App\Models\EventType;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -89,22 +90,52 @@ class AttendanceController extends Controller
      */
     public function show(Request $request)
     {
-        // 
+        //
+    }
+
+    public function attendanceList(Attendance $attendance, Request $request) {
+        try {
+            $eventCategory = EventType::where('event_type_name', $request->event_category)
+                ->select('event_type_id')
+                ->first();
+                    
+            $eventType = EventType::where('event_type_category', $eventCategory->event_type_id)
+                ->select('event_type_id')
+                ->first();
+            
+            $attendance = Attendance::join('tblmembers', 'tblattendances.member_id', '=', 'tblmembers.member_id')
+                                    ->join('tblevents', 'tblattendances.event_id', '=', 'tblevents.event_id')
+                                    ->where('tblevents.event_type_id', $eventType->event_type_id)
+                                    ->when($request->event_date, function($attendance) use ($request){
+                                        $attendance->where('tblevents.start_date', $request->event_date);
+                                    })
+                                    ->when($request->event_id, function($attendance) use ($request){
+                                        $attendance->where('tblevents.event_id', $request->event_id);                                    })
+                                    ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+                                            'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblattendances.status',
+                                            'tblevents.event_subtitle', 'tblevents.start_date', 'tblevents.event_id')
+                                    ->get();
+
+            if ($attendance->count() > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Success!',
+                    'body' => $attendance
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'No records Found.'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function showAttendance(Attendance $attendance, Request $request) {
         try {                 
             $eventId = $request->event_id;
-            // $getAttendance = Members::leftjoin('tblattendances', function($join) use ($eventId) {
-            //     $join->on('tblmembers.member_id', '=', 'tblattendances.member_id')
-            //     ->where('tblattendances.event_id', '=', $eventId);
-            // })
-            // ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-            //         'nickname', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblmembers.spouse_member_id',
-            //         'religion', 'tblmembers.baptism', 'tblmembers.confirmation', 'tblmembers.member_status_id',
-            //         DB::raw('IFNULL(tblattendances.status, "") As status'))
-            // ->get();
-
             $getAttendance = Members::join('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
                                     ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
                                     ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')

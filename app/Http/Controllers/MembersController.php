@@ -45,17 +45,17 @@ class MembersController extends Controller
                 // START: Table Members Data
 
                 'first_name' => 'required|string|max:191',
-                'middle_name' => 'required|string|max:191',
+                'middle_name' => 'nullable|string|max:191',
                 'last_name' => 'required|string|max:191',
-                'nickname' => 'required|string|max:191',
-                'birthday' => 'required|string|max:191',
-                'gender' => 'required|string|max:191',
-                'civil_status' => 'required|string|max:191',
+                'nickname' => 'nullable|string|max:191',
+                'birthday' => 'nullable|string|max:191',
+                'gender' => 'nullable|string|max:191',
+                'civil_status' => 'nullable|string|max:191',
                 'spouse_member_id' => 'nullable|integer',
-                'religion' => 'required|string|max:191',
-                'baptism' => 'required|string',
-                'confirmation' => 'required|string',
-                'member_status_id' => 'required|integer',
+                'religion' => 'nullable|string|max:191',
+                'baptism' => 'nullable|string',
+                'confirmation' => 'nullable|string',
+                'member_status_id' => 'nullable|integer',
                 'created_by' => 'required|integer',
 
                 // END: Table Members Data
@@ -64,30 +64,30 @@ class MembersController extends Controller
 
                 'member_address_line1' => 'nullable|string|max:191',
                 'member_address_line2' => 'nullable|string|max:255',
-                'member_city' => 'required|string|max:191',
+                'member_city' => 'nullable|string|max:191',
 
                 // END: Table Address Data
 
                 // START: Table ContactNumbers Data
 
-                'member_mobile' => 'required|string|max:20',
+                'member_mobile' => 'nullable|string|max:20',
 
                 // END: Table ContactNumbers Data
 
                 // START: Table Emails Data
 
-                'email' => 'required|string|max:191',
+                'email' => 'nullable|string|max:191',
 
                 // END: Table Emails Data
 
                 // START: Table Occupations Data
 
-                'occupation_name' => 'required|string|max:191',
+                'occupation_name' => 'nullable|string|max:191',
                 'specialty' => 'nullable|string|max:191',
                 'company' => 'nullable|string|max:191',
                 'company_address_line1' => 'nullable|string|max:191',
                 'company_address_line2' => 'nullable|string|max:255',
-                'city' => 'required|string|max:191',
+                'city' => 'nullable|string|max:191',
 
                 // END: Table Occupations Data
             ]);
@@ -321,17 +321,17 @@ class MembersController extends Controller
                 // START: Table Members Data
 
                 'first_name' => 'required|string|max:191',
-                'middle_name' => 'required|string|max:191',
+                'middle_name' => 'nullable|string|max:191',
                 'last_name' => 'required|string|max:191',
-                'nickname' => 'required|string|max:191',
-                'birthday' => 'required|string|max:191',
-                'gender' => 'required|string|max:191',
-                'civil_status' => 'required|string|max:191',
+                'nickname' => 'nullable|string|max:191',
+                'birthday' => 'nullable|string|max:191',
+                'gender' => 'nullable|string|max:191',
+                'civil_status' => 'nullable|string|max:191',
                 'spouse_member_id' => 'nullable|integer',
-                'religion' => 'required|string|max:191',
-                'baptism' => 'required|string',
-                'confirmation' => 'required|string',
-                'member_status_id' => 'required|integer',
+                'religion' => 'nullable|string|max:191',
+                'baptism' => 'nullable|string',
+                'confirmation' => 'nullable|string',
+                'member_status_id' => 'nullable|integer',
 
                 // END: Table Members Data
 
@@ -345,19 +345,19 @@ class MembersController extends Controller
 
                 // START: Table ContactNumbers Data
 
-                'member_mobile' => 'required|string|max:20',
+                'member_mobile' => 'nullable|string|max:20',
 
                 // END: Table ContactNumbers Data
 
                 // START: Table Emails Data
 
-                'email' => 'required|string|max:191',
+                'email' => 'nullable|string|max:191',
 
                 // END: Table Emails Data
 
                 // START: Table Occupations Data
 
-                'occupation_name' => 'required|string|max:191',
+                'occupation_name' => 'nullable|string|max:191',
                 'specialty' => 'nullable|string|max:191',
                 'company' => 'nullable|string|max:191',
                 'company_address_line1' => 'nullable|string|max:191',

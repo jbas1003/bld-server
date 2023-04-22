@@ -139,7 +139,7 @@ class MemberAccountsController extends Controller
             $accounts = Members::leftjoin('tblmember_accounts', function($join) {
                                     $join->on('tblmembers.member_id', '=', 'tblmember_accounts.member_id');
                                     })
-                                ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+                                ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.member_id',
                                     'tblmember_accounts.memberAccount_id', DB::raw('IFNULL(tblmember_accounts.username, "") As username'))
                                 ->get();
                                 

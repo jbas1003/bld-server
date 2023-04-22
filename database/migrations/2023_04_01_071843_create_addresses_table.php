@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tbladdresses', function (Blueprint $table) {
             $table->id('address_id');
             $table->string('address_line1')->nullable();
-            $table->string('address_line2');
-            $table->string('city');
+            $table->string('address_line2')->nullable();
+            $table->string('city')->nullable();
             $table->integer('created_by');
             $table->string('created_on');
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('addresses');
+        // Schema::dropIfExists('addresses');
     }
 };
