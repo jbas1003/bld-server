@@ -105,12 +105,12 @@ class MembersController extends Controller
                                           ->first();
 
                 if ($memberExist) {
-                    if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
-                        return response()->json([
-                            'status' => 422,
-                            'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
-                        ], 422);
-                    } else {
+                    // if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
+                    //     return response()->json([
+                    //         'status' => 422,
+                    //         'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
+                    //     ], 422);
+                    // } else {
                         
                         $member = Members::create([
                             'first_name' => $request->first_name,
@@ -181,7 +181,7 @@ class MembersController extends Controller
                                 'message' => 'Server Error.'
                             ], 422);
                         }
-                    }
+                    // }
                 } else {
                     $getEvent = Events::where('event_name', $request->event_name)->first();
                         
