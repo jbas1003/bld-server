@@ -13,12 +13,10 @@ class EmergencyContact extends Model
     protected $primaryKey = 'emergencyContact_id';
     protected $fillable = [
         'seId',
-        'first_name',
-        'middle_name',
-        'last_name',
-        'relationship',
+        'name',
         'mobile',
         'email',
+        'relationship',
         'created_by'
     ];
 
