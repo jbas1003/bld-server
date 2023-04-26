@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('mobile')->nullable();
             $table->string('email')->nullable();
-            $table->string('relationship')->nullable();
             $table->integer('created_by');
             $table->string('created_on');
         });
