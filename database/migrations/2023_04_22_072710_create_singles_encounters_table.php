@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('tblsingles_encounter', function (Blueprint $table) {
             $table->id('seId');
             $table->integer('member_id')->nullable();
-            $table->integer('emergencyContact_id')->nullable();
             $table->string('room')->nullable();
             $table->string('tribe')->nullable();
             $table->string('nation')->nullable();
