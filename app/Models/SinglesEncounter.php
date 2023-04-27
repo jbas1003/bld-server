@@ -13,11 +13,11 @@ class SinglesEncounter extends Model
     protected $primaryKey = 'seId';
     protected $fillable = [
         'member_id',
-        'emergencyContact_id',
         'room',
         'tribe',
         'nation',
-        'created_by'
+        'created_by',
+        'created_on'
     ];
 
     public $timestamps = false;
