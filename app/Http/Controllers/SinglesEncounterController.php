@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Emails;
+use App\Models\Members;
+use App\Models\Addresses;
+use App\Models\Occupation;
+use App\Models\ContactInfo;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\ContactNumbers;
 use App\Models\EmergencyContact;
 use App\Models\SinglesEncounter;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -34,79 +41,220 @@ class SinglesEncounterController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                // // START: Table Members Data
+                // START: Table Members Data
 
-                //     'first_name' => 'required|string|max:191',
-                //     'middle_name' => 'required|string|max:191',
-                //     'last_name' => 'required|string|max:191',
-                //     'nickname' => 'nullable|string|max:191',
-                //     'birthday' => 'nullable|string|max:191',
-                //     'gender' => 'nullable|string|max:90',
-                //     'civil_status' => 'nullable|string|max:50',
-                //     'religion' => 'nullable|string|max:191',
-                //     'baptism' => 'nullable|string|max:30',
-                //     'confirmation' => 'nullable|string|max:30',
-                //     'member_status' => 'nullable|integer',
-                //     'created_by' => 'required|integer',
+                    'first_name' => 'nullable|string|max:191',
+                    'middle_name' => 'nullable|string|max:191',
+                    'last_name' => 'nullable|string|max:191',
+                    'nickname' => 'nullable|string|max:191',
+                    'birthday' => 'nullable|string|max:191',
+                    'gender' => 'nullable|string|max:90',
+                    'civil_status' => 'nullable|string|max:50',
+                    'religion' => 'nullable|string|max:191',
+                    'baptized' => 'nullable|string|max:30',
+                    'confirmed' => 'nullable|string|max:30',
+                    'member_status_id' => 'nullable|integer',
+                    'created_by' => 'required|integer',
 
-                // // END: Table Members Data
+                // END: Table Members Data
 
-                // // START: Table Address Data
+                // START: Table Address Data
 
-                //     'member_addressLine1' => 'nullable|string|max:255',
-                //     'member_addressLine2' => 'nullable|string|max:255',
-                //     'member_city' => 'nullalbe|string|max:255',
+                    'member_addressLine1' => 'nullable|string|max:255',
+                    'member_addressLine2' => 'nullable|string|max:255',
+                    'member_city' => 'nullable|string|max:255',
 
-                // // END: Table Address Data
+                // END: Table Address Data
 
-                // // START: Table ContactNumbers Data
+                // START: Table ContactNumbers Data
 
-                //     'member_mobile' => 'nullable|string|max:20',
+                    'member_mobile' => 'nullable|string|max:20',
 
-                // // END: Table ContactNumbers Data
+                // END: Table ContactNumbers Data
 
-                // // START: Table Emails Data
+                // START: Table Emails Data
 
-                //     'member_email' => 'nullable|string|max:191',
+                    'member_email' => 'nullable|string|max:191',
 
-                // // END: Table Emails Data
+                // END: Table Emails Data
 
-                // // Start: Table Occupations Data
+                // Start: Table Occupations Data
 
-                //     'occupation' => 'nullable|string|max:191',
-                //     'specialty' => 'nullable|string|max:191',
-                //     'company' => 'nullable|string|max:191',
-                //     'company_addressLine1' => 'nullable|string|max:255',
-                //     'company_addressLine2' => 'nullable|string|max:255',
-                //     'city' => 'nullable|string|max:191',
+                    'occupation' => 'nullable|string|max:191',
+                    'specialty' => 'nullable|string|max:191',
+                    'company' => 'nullable|string|max:191',
+                    'company_addressLine1' => 'nullable|string|max:255',
+                    'company_addressLine2' => 'nullable|string|max:255',
+                    'city' => 'nullable|string|max:191',
 
-                // // END: Table Occupations Data
+                // END: Table Occupations Data
 
                 // START: Table EmergencyContacts Data
 
-                    'emergency_contacts' => 'nullable|array'
+                    'emergency_contacts' => 'nullable|array',
 
                 // END: Table EmergencyContacts Data
+
+                // START: Table Singles Encounter Data
+
+                    'room' => 'nullable|string|max:50',
+                    'tribe' => 'nullable|string|max:50',
+                    'nation' => 'nullable|string|50',
+
+                // END: Table Singles Encounter Data
 
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 422,
-                    'message' => $validator->message(),
+                    'message' => $validator->messages(),
                 ]);
             } else {
-                // $emergecnyContact = EmergencyContact::create([
+                $memberExist = ContactInfo::join('tblmembers', 'tblcontact_infos.member_id', '=', 'tblmembers.member_id')
+                                          ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                          ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                          ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                          ->first();
+                return $memberExist;
+                // if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
+                // return response()->json([
+                //     'status' => 422,
+                //     'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
+                // ], 422);
+                // } else {
+                //     // START: Members Insert Query
 
-                // ]);
-                $emergency_contacts = $request->emergency_contacts;
-                
-                return $emergency_contacts->name;
-                // for ($i=0; $i < count($emergency_contacts)-1; $i++) { 
-                //     return $emergency_contacts[i]->name;
+                //         $member = Members::create([
+                //             'first_name' => $request->first_name,
+                //             'middle_name' => $request->middle_name,
+                //             'last_name' => $request->last_name,
+                //             'nickname' => $request->nickname,
+                //             'birthday' => $request->birthday,
+                //             'gender' => $request->gender,
+                //             'civil_status' => $request->civil_status,
+                //             'religion' => $request->religion,
+                //             'baptized' => $request->baptism,
+                //             'confirmed' => $request->confirmation,
+                //             'member_status_id' => $request->member_status_id,
+                //             'created_by' => $request->created_by,
+                //             'created_on' => now()
+                //         ]);
+
+                //     // END: Members Insert Query
+
+                //     // START: Address Insert Query
+
+                //         $address = Addresses::create([
+                //             'member_addressLine1' => $request->member_address_line1,
+                //             'member_addressLine2' => $request->member_address_line2,
+                //             'member_city' => $request->member_city,
+                //             'created_by' => $request->created_by,
+                //             'created_on' => now()
+                //         ]);
+
+                //     // END: Address Insert Query
+
+                //     // START: Contact Number Insert Query
+
+                //         $contactNumber = ContactNumbers::create([
+                //             'member_mobile' => $request->member_mobile,
+                //             'created_by' => $request->created_by,
+                //             'created_on' => now()
+                //         ]);
+
+                //     // END: Contact Number Insert Query
+
+                //     // START: Email Insert Query
+
+                //         $email = Emails::create([
+                //             'member_email' => $request->email,
+                //             'created_by' => $request->created_by,
+                //             'created_on' => now()
+                //         ]);
+
+                //     // END: Email Insert Query
+
+                //     // START: Occupation Insert Query
+
+                //         $occupation = Occupation::create([
+                //             'occupation' => $request->occupation_name,
+                //             'specialty' => $request->specialty,
+                //             'company' => $request->company,
+                //             'company_addressLine1' => $request->company_address_line1,
+                //             'company_addressLine2' => $request->company_address_line2,
+                //             'company_city' => $request->city,
+                //             'created_by' => $request->created_by,
+                //             'created_on' => now()
+                //         ]);
+
+                //     // END: Occupation Insert Query
+
+                //     // START: Contact Info Insert Query
+
+                //         $contactInfo = ContactInfo::create([
+                //             'member_id' => $member->member_id,
+                //             'address_id' => $address->id,
+                //             'contactNumber_id' => $contactNumber->id,
+                //             'email_id' => $email->id,
+                //             'occupation_id' => $occupation->id,
+                //             'created_by' => $request->created_by,
+                //             'created_on' => now()
+                //         ]);
+
+                //     // END: Contact Info Insert Query
+
+                //     // START: Singles Encounter Insert Query
+
+                //         $SE = SinglesEncounter::create([
+                //             'member_id' => $member->member_id,
+                //             'room' => $request->room,
+                //             'nation' => $request->nation,
+                //             'created_by' => $request->created_by,
+                //             'created_on' => now()
+                //         ]);
+
+                //     // END: Singles Encounter Insert Query
+
+                //     // START: Emergency Contact Insert Query
+
+                //         $dataSet = [];
+                //         $emergency_contacts = $request->emergency_contacts;
+                        
+                //         foreach ($emergency_contacts as $contacts) {
+                //             $dataSet[] = [
+                //                 'seId' => $SE->seId,
+                //                 'name' => $contacts['name'],
+                //                 'mobile' => $contacts['mobile'],
+                //                 'email' => $contacts['email'],
+                //                 'relationship' => $contacts['relationship'],
+                //                 'created_by' => $contacts['created_by'],
+                //                 'created_on' => now()
+                //             ];
+                //         }
+
+                //         $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
+
+                //     // END: Emergency Contact Insert Query
+
+                //     if ($contactInfo === true & $emergencyContacts === true) {
+                //         return response()->json([
+                //             'status' => 200,
+                //             'message' => 'Adding participant was successful!'
+                //         ]);
+                //     } else {
+                //         return response()->json([
+                //             'status' => 500,
+                //             'message' => 'A problem was encountered while adding participant records. Please acontact system administrators.'
+                //         ]);
+                //     }
                 // }
             }
         } catch (\Throwable $th) {
+            // return response()->json([
+            //     'status' => 500,
+            //     'message' => 'Server Error: Please contact system adminstrator.'
+            // ]);
             throw $th;
         }
     }
