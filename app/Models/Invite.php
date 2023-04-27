@@ -12,7 +12,12 @@ class Invite extends Model
     protected $table = 'tblinvites';
     protected $primaryKey = 'invite_id';
     protected $fillable = [
+<<<<<<< Updated upstream
         'event_encounter_id',
+=======
+        'encounter_id',
+        'event_id',
+>>>>>>> Stashed changes
         'inviter_id',
         'relationship',
         'created_by'
