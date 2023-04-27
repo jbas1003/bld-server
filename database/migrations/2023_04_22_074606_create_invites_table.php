@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('tblinvites', function (Blueprint $table) {
             $table->id('invite_id');
-            $table->integer('event_encounter_id')->nullable();
+            $table->integer('encounter_id')->nullable();
+            $table->integer('event_id')->nullable();
             $table->integer('inviter_id')->nullable();
             $table->string('relationship')->nullable();
             $table->integer('created_by');
