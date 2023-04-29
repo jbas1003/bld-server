@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('tribe')->nullable();
             $table->string('nation')->nullable();
             $table->integer('event_id');
+            $table->string('status')->nullable();
             $table->integer('created_by');
             $table->string('created_on');
         });
