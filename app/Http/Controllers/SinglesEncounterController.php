@@ -210,6 +210,8 @@ class SinglesEncounterController extends Controller
                             'member_id' => $member->member_id,
                             'room' => $request->room,
                             'nation' => $request->nation,
+                            'event_id' => $request->event_id,
+                            'status' => $request->status,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -251,11 +253,10 @@ class SinglesEncounterController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            // return response()->json([
-            //     'status' => 500,
-            //     'message' => 'Server Error: Please contact system adminstrator.'
-            // ]);
-            throw $th;
+            return response()->json([
+                'status' => 500,
+                'message' => 'Server Error: Please contact system adminstrator.'
+            ]);
         }
     }
 
@@ -276,6 +277,15 @@ class SinglesEncounterController extends Controller
                 'message' => 'No records found.'
             ]);
         }
+    }
+
+    public function showSE (Request $request) {
+        $participants = SinglesEncounter::join('tblmembers', 'tblsingles_encounter.member_id', '=', 'tblmembers.member_id')
+                                        ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+                                                'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday')
+                                        ->get();
+
+        return $participants;
     }
 
     /**
