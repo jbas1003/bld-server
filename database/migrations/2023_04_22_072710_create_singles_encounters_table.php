@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('room')->nullable();
             $table->string('tribe')->nullable();
             $table->string('nation')->nullable();
+            $table->integer('event_id');
             $table->integer('created_by');
             $table->string('created_on');
         });
