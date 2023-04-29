@@ -17,6 +17,7 @@ class SinglesEncounter extends Model
         'tribe',
         'nation',
         'event_id',
+        'status',
         'created_by',
         'created_on'
     ];
