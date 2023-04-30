@@ -280,12 +280,37 @@ class SinglesEncounterController extends Controller
     }
 
     public function showSE (Request $request) {
-        $participants = SinglesEncounter::join('tblmembers', 'tblsingles_encounter.member_id', '=', 'tblmembers.member_id')
-                                        ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-                                                'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday')
-                                        ->get();
+        // $participants = SinglesEncounter::join('tblmembers', 'tblsingles_encounter.member_id', '=', 'tblmembers.member_id')
+        //                                 ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+        //                                         'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday',
+        //                                         DB::raw('IFNULL(tblsingles_encounter.status, null) As status'))
+        //                                 ->get();
 
-        return $participants;
+        $participants = Members::leftjoin('tblsingles_encounter', function($se) {
+            $se->on('tblmembers.member_id', '=', 'tblsingles_encounter.member_id');
+        })
+        ->where('tblmembers.civil_status', 'LIKE', '%single')
+        ->when($request->event_id, function($se) use ($request) {
+            $se->where('tblsingles_encounter.event_id', '=', $request->event_id);
+        })
+        ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
+                'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday', 'tblsingles_encounter.status',
+                DB::raw('IFNULL(tblsingles_encounter.member_id, "No") As SE,
+                IFNULL(tblsingles_encounter.event_id, "No") As se_class'))
+                ->get();
+
+        if ($participants->count() > 0) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Success!',
+                'body' => $participants
+            ]);
+        } else {
+            return response()->json([
+                'status' => 422,
+                'message' => 'No records found.'
+            ]);
+        }
     }
 
     /**
