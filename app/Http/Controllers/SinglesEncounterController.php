@@ -290,8 +290,8 @@ class SinglesEncounterController extends Controller
             $se->on('tblmembers.member_id', '=', 'tblsingles_encounter.member_id');
         })
         ->where('tblmembers.civil_status', 'LIKE', '%single')
-        ->when($request->event_id, function($se) use ($request) {
-            $se->where('tblsingles_encounter.event_id', '=', $request->event_id);
+        ->when($request->event, function($se) use ($request) {
+            $se->where('tblsingles_encounter.event_id', '=', $request->event);
         })
         ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
                 'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday', 'tblsingles_encounter.status',
