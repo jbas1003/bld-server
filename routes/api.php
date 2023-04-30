@@ -117,7 +117,7 @@ use App\Http\Controllers\SinglesEncounterController;
 
 // START: Singles Encounter Routes
 
-    Route::get('SE', [SinglesEncounterController::class, 'showSE']);
+    Route::post('show_SE', [SinglesEncounterController::class, 'showSE']);
     Route::post('SE', [SinglesEncounterController::class, 'store']);
 
 // END: Singles Encounter Routes
