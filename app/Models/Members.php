@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Models\Members;
 use App\Models\ContactInfo;
+use App\Models\EmergencyContact;
+use App\Models\SinglesEncounter;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Member As Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Members extends Authenticatable
 {
@@ -34,8 +37,19 @@ class Members extends Authenticatable
     ];
 
     public $timestamps = false;
-
-    public function contactInfo ():BelongsTo {
-        return $this->belongsTo(ContactInfo::class);
+    
+    /**
+     * Get all of the comments for the Members
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function emergency_contacts(): HasManyThrough
+    {
+        return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
     }
+
+    // public function emergency_contacts(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
+    // }
 }
