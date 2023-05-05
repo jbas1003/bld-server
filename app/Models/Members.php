@@ -40,6 +40,6 @@ class Members extends Authenticatable
     
     public function emergency_contacts(): HasManyThrough
     {
-        return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class);
+        return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
     }
 }
