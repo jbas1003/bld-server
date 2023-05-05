@@ -281,8 +281,11 @@ class SinglesEncounterController extends Controller
 
     public function showSE (Request $request) {
         $participants = Members::select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name',
-                                        'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday',
+                                        'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender',
+                                        'tblmembers.birthday', 'tbladdresses.address_line1',
                                         'tblsingles_encounter.status')
+                            ->join('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
+                            ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
                             ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
                             ->with(['emergency_contacts' => function($query) {
                                 $query->select('tblemergency_contacts.name',
