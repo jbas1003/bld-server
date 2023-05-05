@@ -280,82 +280,23 @@ class SinglesEncounterController extends Controller
     }
 
     public function showSE (Request $request) {
-        // $participants = SinglesEncounter::join('tblmembers', 'tblsingles_encounter.member_id', '=', 'tblmembers.member_id')
-        //                                 ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-        //                                         'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday',
-        //                                         DB::raw('IFNULL(tblsingles_encounter.status, null) As status'))
-        //                                 ->get();
-
-        // $participants = DB::table('tblmembers')
-        // ->leftjoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
-        // ->leftJoin('tblemergency_contacts', 'tblsingles_encounter.seId', '=', 'tblemergency_contacts.seId')
-        // ->where('tblmembers.civil_status', 'LIKE', '%single')
-        // ->when($request->event, function($se) use ($request) {
-        //     $se->where('tblsingles_encounter.event_id', '=', $request->event);
-        // })
-        // ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-        //         'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday', 'tblsingles_encounter.status',
-        //         DB::raw('IFNULL(tblsingles_encounter.member_id, "No") As SE,
-        //         IFNULL(tblsingles_encounter.event_id, "No") As se_class'), 'tblemergency_contacts.*')
-        // ->get();
-
-        // $participants = Members::select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-        //                         'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday',
-        //                         'tblsingles_encounter.status')
-        //                 ->with(['emergency_contacts' => function($query) {
-        //                     $query->select('tblemergency_contacts.name', 'tblemergency_contacts.mobile',
-        //                                     'tblemergency_contacts.email', 'tblemergency_contacts.relationship');
-        //                 }])
-        //                 ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
-        //                 ->leftJoin('tblemergency_contacts', 'tblsingles_encounter.seId', '=', 'tblemergency_contacts.seId')
-        //                 ->get();
-
-        // $participants = Members::select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-        //                                 'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday')
-        //                         ->with(['emergency_contacts' => function($query) {
-        //                             $query->select('tblemergency_contacts.name',
-        //                                             'tblemergency_contacts.mobile',
-        //                                             'tblemergency_contacts.email',
-        //                                             'tblemergency_contacts.relationship');
-        //                         }])
-        //                         ->get();
-
-        $participants = Members::leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
-                            ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name',
-                                    'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday',
-                                    'tblsingles_encounter.status', 'tblsingles_encounter.seId'
-                            )
+        $participants = Members::select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name',
+                                        'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender', 'tblmembers.birthday',
+                                        'tblsingles_encounter.status')
+                            ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
+                            ->with(['emergency_contacts' => function($query) {
+                                $query->select('tblemergency_contacts.name',
+                                                'tblemergency_contacts.mobile',
+                                                'tblemergency_contacts.email',
+                                                'tblemergency_contacts.relationship');
+                            }])
                             ->get();
-
-        
-        $emergencyContacts = EmergencyContact::select('seId', 'name', 'mobile', 'email', 'relationship')
-                                            ->get();
-
-        $participantSet = [];
-
-        foreach ($participants as $participant) {
-            foreach($emergencyContacts as $contacts) {
-                if($participant['seId'] === $contacts['seId']) {
-                    $participantSet[] = [
-                        'first_name' => $participant['first_name'],
-                        'middle_name' => $participant['middle_name'],
-                        'last_name' => $participant['last_name'],
-                        'nickname' => $participant['nickname'],
-                        'gender' => $participant['gender'],
-                        'birthday' => $participant['birthday'],
-                        'se_status' => $participant['status'],
-                        'emergency_contacts' => $contacts
-                    ];
-    
-                }
-            }
-        }
 
         if ($participants->count() > 0) {
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',
-                'body' => $participantSet
+                'body' => $participants
             ]);
         } else {
             return response()->json([
