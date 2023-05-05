@@ -25,5 +25,4 @@ class SinglesEncounter extends Model
     ];
 
     public $timestamps = false;
-
 }
