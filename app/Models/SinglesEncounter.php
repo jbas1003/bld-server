@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\EmergencyContact;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SinglesEncounter extends Model
 {
@@ -23,4 +25,5 @@ class SinglesEncounter extends Model
     ];
 
     public $timestamps = false;
+
 }
