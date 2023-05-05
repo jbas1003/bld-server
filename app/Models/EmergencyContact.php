@@ -24,5 +24,4 @@ class EmergencyContact extends Model
     ];
 
     public $timestamps = false;
-
 }
