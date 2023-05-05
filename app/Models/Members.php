@@ -38,18 +38,8 @@ class Members extends Authenticatable
 
     public $timestamps = false;
     
-    /**
-     * Get all of the comments for the Members
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
     public function emergency_contacts(): HasManyThrough
     {
-        return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
+        return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class);
     }
-
-    // public function emergency_contacts(): HasManyThrough
-    // {
-    //     return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
-    // }
 }
