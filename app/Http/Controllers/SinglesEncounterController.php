@@ -282,11 +282,23 @@ class SinglesEncounterController extends Controller
     public function showSE (Request $request) {
         $participants = Members::select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name',
                                         'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender',
-                                        'tblmembers.birthday', 'tbladdresses.address_line1',
-                                        'tblsingles_encounter.status')
+                                        'tblmembers.birthday', 'tblmembers.civil_status', 'tblmembers.religion',
+                                        'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1',
+                                        'tbladdresses.address_line2', 'tbladdresses.city', 'tblcontact_numbers.mobile',
+                                        'tblemails.email', 'tbloccupations.occupation_name', 'tbloccupations.specialty',
+                                        'tbloccupations.company', 'tbloccupations.address_line1 As work_addressLine1',
+                                        'tbloccupations.address_line2 as work_addressLine2', 'tbloccupations.city As work_city',
+                                        'tblsingles_encounter.status As attendance_status')
                             ->join('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
                             ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                            ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                            ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                            ->join('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                             ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
+                            ->where('tblmembers.civil_status', 'LIKE', '%single')
+                            ->when($request->event, function($se) use ($request) {
+                                $se->where('tblsingles_encounter.event_id', '=', $request->event);
+                            })
                             ->with(['emergency_contacts' => function($query) {
                                 $query->select('tblemergency_contacts.name',
                                                 'tblemergency_contacts.mobile',
