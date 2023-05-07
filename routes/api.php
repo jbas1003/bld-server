@@ -119,5 +119,6 @@ use App\Http\Controllers\SinglesEncounterController;
 
     Route::post('show_SE', [SinglesEncounterController::class, 'showSE']);
     Route::post('SE', [SinglesEncounterController::class, 'store']);
+    Route::put('update_SE', [SinglesEncounterController::class, 'update']);
 
 // END: Singles Encounter Routes
