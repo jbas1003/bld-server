@@ -298,7 +298,8 @@ class SinglesEncounterController extends Controller
                             ->where('tblmembers.civil_status', 'LIKE', '%single')
                             // ->whereOr('tblsingles_encounter.event_id', '=', $request->event)
                             ->with(['emergency_contacts' => function($query) {
-                                $query->select('tblemergency_contacts.name',
+                                $query->select('tblemergency_contacts.emergencyContact_id',
+                                                'tblemergency_contacts.name',
                                                 'tblemergency_contacts.mobile',
                                                 'tblemergency_contacts.email',
                                                 'tblemergency_contacts.relationship');
@@ -486,11 +487,23 @@ class SinglesEncounterController extends Controller
                             $getEmergencyContacts = EmergencyContact::where('seId', $getSe->seId)->get();
                             
                             if ($getEmergencyContacts->count() > 0) {
-                                foreach ($emergencyContacts as $contacts) {
-                                    // update emergency contacts
+
+                                foreach ($emergency_contacts as $contacts) {
+                                   $emergencyContacts = EmergencyContact::where('emergencyContact_id', $contacts['emergencyContact_id'])
+                                                    ->update([
+                                                        'name' => $contacts['name'],
+                                                        'mobile' => $contacts['mobile'],
+                                                        'email' => $contacts['email'],
+                                                        'relationship' => $contacts['relationship']
+                                                    ]);
                                 }
+
+                                return response()->json([
+                                    'status' => 200,
+                                    'message' => 'Update Success!'
+                                ]);
                             } else {
-                                // START: Emergency Contact Insert Query
+                                // START: Emergency Contact Update Query
 
                                     foreach ($emergency_contacts as $contacts) {
                                         $dataSet[] = [
@@ -506,14 +519,20 @@ class SinglesEncounterController extends Controller
 
                                     $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
 
-                                // END: Emergency Contact Insert Query
-                            }
+                                // END: Emergency Contact Update Query
 
-                            // if ($getEmergencyContacts) {
-                                
-                            // } else {
-                                
-                            // }
+                                if ($emergencyContacts === true) {
+                                    return response()->json([
+                                        'status' => 200,
+                                        'message' => 'Update Success!'
+                                    ]);
+                                } else {
+                                    return response()->json([
+                                        'status' => 500,
+                                        'message' => 'A problem was encountered while updating participant records. Please acontact system administrators.'
+                                    ]);
+                                }
+                            }
                             
                     } else {
                         $SE = SinglesEncounter::create([
@@ -526,52 +545,47 @@ class SinglesEncounterController extends Controller
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
+                        
 
-                        return $SE->seId;
+                        // START: Emergency Contact Insert Query
 
-                        // // START: Emergency Contact Insert Query
-
-                        //     $dataSet = [];
-                        //     $emergency_contacts = $request->emergency_contacts;
+                            $dataSet = [];
+                            $emergency_contacts = $request->emergency_contacts;
                             
-                        //     foreach ($emergency_contacts as $contacts) {
-                        //         $dataSet[] = [
-                        //             'seId' => $SE->seId,
-                        //             'name' => $contacts['name'],
-                        //             'mobile' => $contacts['mobile'],
-                        //             'email' => $contacts['email'],
-                        //             'relationship' => $contacts['relationship'],
-                        //             'created_by' => $contacts['created_by'],
-                        //             'created_on' => now()
-                        //         ];
-                        //     }
+                            foreach ($emergency_contacts as $contacts) {
+                                $dataSet[] = [
+                                    'seId' => $SE->seId,
+                                    'name' => $contacts['name'],
+                                    'mobile' => $contacts['mobile'],
+                                    'email' => $contacts['email'],
+                                    'relationship' => $contacts['relationship'],
+                                    'created_by' => $request->created_by,
+                                    'created_on' => now()
+                                ];
+                            }
 
-                        //     $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
+                            $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
 
-                        // // END: Emergency Contact Insert Query
+                        // END: Emergency Contact Insert Query
+
+                        if ($emergencyContacts === true) {
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Update Success!'
+                            ]);
+                        } else {
+                            return response()->json([
+                                'status' => 500,
+                                'message' => 'A problem was encountered while updating participant records. Please acontact system administrators.'
+                            ]);
+                        }
                     }
-                    
-
-                // END: Singles Encounter Update Query
-                
-                // if ($contactInfo->count() > 0 & $emergencyContacts === true) {
-                //     return response()->json([
-                //         'status' => 200,
-                //         'message' => 'Adding participant was successful!'
-                //     ]);
-                // } else {
-                //     return response()->json([
-                //         'status' => 500,
-                //         'message' => 'A problem was encountered while adding participant records. Please acontact system administrators.'
-                //     ]);
-                // }
             }
         } catch (\Throwable $th) {
-            // return response()->json([
-            //     'status' => 500,
-            //     'message' => 'Server Error: Please contact system adminstrator.'
-            // ]);
-            throw $th;
+            return response()->json([
+                'status' => 500,
+                'message' => 'Server Error: Please contact system adminstrator.'
+            ]);
         }
     }
 
