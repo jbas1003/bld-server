@@ -136,7 +136,7 @@ class SinglesEncounterController extends Controller
                             'religion' => $request->religion,
                             'baptized' => $request->baptism,
                             'confirmed' => $request->confirmation,
-                            'member_status_id' => $request->member_status_id,
+                            'member_status_id' => 1,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -390,11 +390,7 @@ class SinglesEncounterController extends Controller
 
                 // START: Table Singles Encounter Data
 
-                    'room' => 'nullable|string|max:50',
-                    'tribe' => 'nullable|string|max:50',
-                    'nation' => 'nullable|string|max:50',
                     'event_id' => 'nullable|integer',
-                    'status' => 'nullable|string|max:50',
 
                 // END: Table Singles Encounter Data
 
@@ -421,7 +417,7 @@ class SinglesEncounterController extends Controller
                             'religion' => $request->religion,
                             'baptism' => $request->baptism,
                             'confirmation' => $request->confirmation,
-                            'member_status_id' => $request->member_status_id,
+                            'member_status_id' => 1,
                         ]);
 
                 // END: Members Update Query
@@ -477,11 +473,7 @@ class SinglesEncounterController extends Controller
                     if ($getSe) {
                         $SE = SinglesEncounter::where('seId', $getSe->seId)
                             ->update([
-                                'room' => $request->room,
-                                'tribe' => $request->tribe,
-                                'nation' => $request->nation,
                                 'event_id' => $request->event_id,
-                                'status' => $request->status,
                             ]);
 
                             $getEmergencyContacts = EmergencyContact::where('seId', $getSe->seId)->get();
@@ -582,10 +574,11 @@ class SinglesEncounterController extends Controller
                     }
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Server Error: Please contact system adminstrator.'
-            ]);
+            // return response()->json([
+            //     'status' => 500,
+            //     'message' => 'Server Error: Please contact system adminstrator.'
+            // ]);
+            throw $th;
         }
     }
 
