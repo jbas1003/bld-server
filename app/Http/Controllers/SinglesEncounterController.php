@@ -134,8 +134,8 @@ class SinglesEncounterController extends Controller
                             'gender' => $request->gender,
                             'civil_status' => $request->civil_status,
                             'religion' => $request->religion,
-                            'baptized' => $request->baptism,
-                            'confirmed' => $request->confirmation,
+                            'baptism' => $request->baptized,
+                            'confirmation' => $request->confirmed,
                             'member_status_id' => 1,
                             'created_by' => $request->created_by,
                             'created_on' => now()
@@ -183,7 +183,7 @@ class SinglesEncounterController extends Controller
                             'company' => $request->company,
                             'address_line1' => $request->company_addressLine1,
                             'address_line2' => $request->company_addressLine2,
-                            'city' => $request->city,
+                            'city' => $request->company_city,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -488,7 +488,7 @@ class SinglesEncounterController extends Controller
 
                             $contactIdsToDelete = array_diff($existingContactIds, array_column($emergency_contacts, 'emergencyContact_id'));
 
-                            \DB::table('tblemergency_contacts')
+                            $deleteContact = \DB::table('tblemergency_contacts')
                                 ->whereIn('emergencyContact_id', $contactIdsToDelete)
                                 ->delete();
 
@@ -515,60 +515,11 @@ class SinglesEncounterController extends Controller
                                     ]);
                                 }
                             }
-                            
-                            // if ($getEmergencyContacts->count() > 0) {
 
-                            //     foreach ($emergency_contacts as $contacts) {
-                            //        $emergencyContacts = EmergencyContact::where('emergencyContact_id', $contacts['emergencyContact_id'])
-                            //                         ->update([
-                            //                             'name' => $contacts['name'],
-                            //                             'mobile' => $contacts['mobile'],
-                            //                             'email' => $contacts['email'],
-                            //                             'relationship' => $contacts['relationship']
-                            //                         ]);
-                            //                         ->when(!whereExists($contacts['emergencyContact_id']), function() use($contacts) {
-                            //                             $dataSet[] = [
-
-                            //                             ];
-                            //                             DB::table('tblemergency_contacts')->insert($dataSet);
-                            //                         })
-                            //     }
-
-                            //     return response()->json([
-                            //         'status' => 200,
-                            //         'message' => 'Update Success!'
-                            //     ]);
-                            // } else {
-                            //     // START: Emergency Contact Update Query
-
-                            //         foreach ($emergency_contacts as $contacts) {
-                            //             $dataSet[] = [
-                            //                 'seId' => $getSe->seId,
-                            //                 'name' => $contacts['name'],
-                            //                 'mobile' => $contacts['mobile'],
-                            //                 'email' => $contacts['email'],
-                            //                 'relationship' => $contacts['relationship'],
-                            //                 'created_by' => $request->created_by,
-                            //                 'created_on' => now()
-                            //             ];
-                            //         }
-
-                            //         $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
-
-                            //     // END: Emergency Contact Update Query
-
-                            //     if ($emergencyContacts === true) {
-                            //         return response()->json([
-                            //             'status' => 200,
-                            //             'message' => 'Update Success!'
-                            //         ]);
-                            //     } else {
-                            //         return response()->json([
-                            //             'status' => 500,
-                            //             'message' => 'A problem was encountered while updating participant records. Please acontact system administrators.'
-                            //         ]);
-                            //     }
-                            // }
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Update Successful!'
+                            ]);
                             
                     } else {
                         $SE = SinglesEncounter::create([
@@ -618,11 +569,10 @@ class SinglesEncounterController extends Controller
                     }
             }
         } catch (\Throwable $th) {
-            // return response()->json([
-            //     'status' => 500,
-            //     'message' => 'Server Error: Please contact system adminstrator.'
-            // ]);
-            throw $th;
+            return response()->json([
+                'status' => 500,
+                'message' => 'Server Error: Please contact system adminstrator.'
+            ]);
         }
     }
 
