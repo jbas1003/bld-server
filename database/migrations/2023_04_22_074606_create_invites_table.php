@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('invite_id');
             $table->integer('encounter_id')->nullable();
             $table->integer('event_id')->nullable();
-            $table->integer('inviter_id')->nullable();
+            $table->string('name')->nullable();
             $table->string('relationship')->nullable();
             $table->integer('created_by');
             $table->string('created_on');
