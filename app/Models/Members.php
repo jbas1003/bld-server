@@ -42,4 +42,9 @@ class Members extends Authenticatable
     {
         return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
     }
+
+    public function inviters(): HasManyThrough
+    {
+        return $this->hasManyThrough(Invite::class, SinglesEncounter::class, 'member_id', 'seId');
+    }
 }
