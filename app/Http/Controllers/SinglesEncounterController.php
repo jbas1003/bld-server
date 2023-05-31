@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Emails;
+use App\Models\Invite;
 use App\Models\Members;
 use App\Models\Addresses;
 use App\Models\Occupation;
@@ -94,6 +95,12 @@ class SinglesEncounterController extends Controller
                     'emergency_contacts' => 'nullable|array',
 
                 // END: Table EmergencyContacts Data
+
+                // START: Table Invite Data
+
+                    'inviter' => 'nullable|array',
+        
+                // END: Table Invite Data
 
                 // START: Table Singles Encounter Data
 
@@ -238,8 +245,27 @@ class SinglesEncounterController extends Controller
                         $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
 
                     // END: Emergency Contact Insert Query
+
+                    // START: Imvite Insert Query
+
+                        $inviterDataSet = [];
+                        $inviters = $request->inviter;
+
+                        foreach ($inviters as $inviter) {
+                            $inviterDataSet[] = [
+                                'seId' => $SE->seId,
+                                'name' => $inviter['name'],
+                                'relationship' => $inviter['relationship'],
+                                'created_by' => $inviter['created_by'],
+                                'created_on' => now()
+                            ];
+                        }
+
+                        $inviterData = DB::table('tblinvites')->insert($inviterDataSet);
+
+                    // END: Invite Insert Query
                     
-                    if ($contactInfo->count() > 0 & $emergencyContacts === true) {
+                    if ($contactInfo->count() > 0 & $inviterData === true) {
                         return response()->json([
                             'status' => 200,
                             'message' => 'Adding participant was successful!'
@@ -303,6 +329,11 @@ class SinglesEncounterController extends Controller
                                                 'tblemergency_contacts.mobile',
                                                 'tblemergency_contacts.email',
                                                 'tblemergency_contacts.relationship');
+                            }])
+                            ->with(['inviters' => function($query) {
+                                $query->select('tblinvites.invite_id',
+                                                'tblinvites.name',
+                                                'tblinvites.relationship');
                             }])
                             ->get();
 
@@ -388,6 +419,12 @@ class SinglesEncounterController extends Controller
                     'emergency_contacts' => 'nullable|array',
 
                 // END: Table EmergencyContacts Data
+
+                // START: Table Invite Data
+
+                    'inviters' => 'nullable|array',
+        
+                // END: Table Invite Data
 
                 // START: Table Singles Encounter Data
 
@@ -479,6 +516,7 @@ class SinglesEncounterController extends Controller
                             ]);
                         }
 
+                        // START: Emergency Contacts Update
                             $getEmergencyContacts = EmergencyContact::where('seId', $getSe->seId)->get();
 
                             $existingContactIds  = \DB::table('tblemergency_contacts')
@@ -515,6 +553,45 @@ class SinglesEncounterController extends Controller
                                     ]);
                                 }
                             }
+                        // END: Emergency Contacts Update
+
+                        // START: Inviter Update
+
+                            $inviters = $request->inviters;
+                            $getInviters = Invite::where('seId', $getSe->seId)->get();
+
+                            $existingInviterIds = \DB::table('tblinvites')
+                                                        ->where('seId', $getSe->seId)
+                                                        ->pluck('invite_id')
+                                                        ->toArray();
+                            
+                            $inviterIdsToDelete = array_diff($existingInviterIds, array_column($inviters, 'invite_id'));
+
+                            $deleteInviter = \DB::table('tblinvites')
+                                                ->whereIn('invite_id', $inviterIdsToDelete)
+                                                ->delete();
+
+                            foreach ($inviters as $inviter) {
+                                if (isset($inviter['invite_id'])) {
+                                    if (in_array($inviter['invite_id'], $existingInviterIds))
+                                        \DB::table('tblinvites')
+                                            ->where('invite_id', $inviter['invite_id'])
+                                            ->update([
+                                                'name' => $inviter['name'],
+                                                'relationship' => $inviter['relationship']
+                                            ]);
+                                } else {
+                                    \DB::table('tblinvites')->insert([
+                                        'seId' => $getSe->seId,
+                                        'name' => $inviter['name'],
+                                        'relationship' => $inviter['relationship'],
+                                        'created_by' => $request->created_by,
+                                        'created_on' => now()
+                                    ]);
+                                }
+                            }
+
+                        // END: Inviter Update
 
                             return response()->json([
                                 'status' => 200,
@@ -569,10 +646,11 @@ class SinglesEncounterController extends Controller
                     }
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Server Error: Please contact system adminstrator.'
-            ]);
+            // return response()->json([
+            //     'status' => 500,
+            //     'message' => 'Server Error: Please contact system adminstrator.'
+            // ]);
+            throw $th;
         }
     }
 
