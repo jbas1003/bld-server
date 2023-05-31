@@ -13,8 +13,13 @@ class Invite extends Model
     protected $primaryKey = 'invite_id';
     protected $fillable = [
         'encounter_id',
-        'event_id',
-        'inviter_id',
+        'yeId',
+        'seId',
+        'meId',
+        'speId',
+        'feId',
+        'ylssId',
+        'lssId',
         'relationship',
         'created_by'
     ];
