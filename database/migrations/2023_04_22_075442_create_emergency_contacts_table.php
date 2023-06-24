@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('tblemergency_contacts', function (Blueprint $table) {
             $table->id('emergencyContact_id');
-            $table->integer('emergencyContactInfo_id');
-            $table->integer('member_id');
-            $table->integer('created_by');
-            $table->string('created_on');
+            $table->integer('seId')->nullable();
+            $table->string('name')->nullable();
+            $table->string('mobile')->nullable();
+            $table->string('email')->nullable();
+            $table->string('relationship')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->string('created_on')->nullable();
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Schema::dropIfExists('emergency_contacts');
+        Schema::dropIfExists('tblemergency_contacts');
     }
 };

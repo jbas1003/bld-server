@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmergencyContacts;
+use App\Models\EmergencyContact;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class EmergencyContactsController extends Controller
+class EmergencyContactController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class EmergencyContactsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EmergencyContacts $emergencyContacts)
+    public function show(EmergencyContact $emergencyContact)
     {
         //
     }
@@ -43,7 +43,7 @@ class EmergencyContactsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EmergencyContacts $emergencyContacts)
+    public function edit(EmergencyContact $emergencyContact)
     {
         //
     }
@@ -51,7 +51,7 @@ class EmergencyContactsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EmergencyContacts $emergencyContacts)
+    public function update(Request $request, EmergencyContact $emergencyContact)
     {
         //
     }
@@ -59,7 +59,7 @@ class EmergencyContactsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EmergencyContacts $emergencyContacts)
+    public function destroy(EmergencyContact $emergencyContact)
     {
         //
     }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmercencyContactinfo;
+use App\Models\Invite;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class EmercencyContactinfoController extends Controller
+class InviteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class EmercencyContactinfoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EmercencyContactinfo $emercencyContactinfo)
+    public function show(Invite $invite)
     {
         //
     }
@@ -43,7 +43,7 @@ class EmercencyContactinfoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EmercencyContactinfo $emercencyContactinfo)
+    public function edit(Invite $invite)
     {
         //
     }
@@ -51,7 +51,7 @@ class EmercencyContactinfoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EmercencyContactinfo $emercencyContactinfo)
+    public function update(Request $request, Invite $invite)
     {
         //
     }
@@ -59,7 +59,7 @@ class EmercencyContactinfoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EmercencyContactinfo $emercencyContactinfo)
+    public function destroy(Invite $invite)
     {
         //
     }
