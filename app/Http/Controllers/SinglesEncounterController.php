@@ -6,6 +6,7 @@ use App\Models\Emails;
 use App\Models\Invite;
 use App\Models\Members;
 use App\Models\Addresses;
+use App\Models\Attendance;
 use App\Models\Occupation;
 use App\Models\ContactInfo;
 use Illuminate\Support\Str;
@@ -279,11 +280,10 @@ class SinglesEncounterController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            // return response()->json([
-            //     'status' => 500,
-            //     'message' => 'Server Error: Please contact system adminstrator.'
-            // ]);
-            return $th;
+            return response()->json([
+                'status' => 500,
+                'message' => 'Server Error: Please contact system adminstrator.'
+            ]);
         }
     }
 
@@ -359,6 +359,84 @@ class SinglesEncounterController extends Controller
     {
         //
     }
+
+    // START: Update tblsingles_encounter and tblattendances
+
+        public function createAttendance(Request $request) {
+            try {
+                $validator = Validator::make($request->all(), [
+                    'member_id' => 'required|integer',
+                    'event_id' => 'required|integer',
+                    'status' => 'required|string|max:5',
+                    'created_by' => 'nullable|integer'
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => 422,
+                        'message' => $validator->messages(),
+                    ]);
+                } else {
+                    $seAttendance = SinglesEncounter::where('member_id', '=', $request->member_id)
+                                ->update([
+                                    'event_id' => $request->event_id,
+                                    'status' => $request->status
+                                ]);
+                    
+                    $existingAttendance = Attendance::where('member_id', '=', $request->member_id)->first();
+
+                    if ($existingAttendance) {
+                        $existingAttendance->update([
+                            'event_id' => $request->event_id,
+                            'status' => $request->status
+                        ]);
+
+                        if ($seAttendance > 0 & $existingAttendance->count() > 0) {
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Attendance updated successfully!'
+                            ]);
+                        } else{
+                            return response()->json([
+                                'status' => 422,
+                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
+                            ]);
+                        }
+                    } else{
+                        $attendance = Attendance::create([
+                            'member_id' => $request->member_id,
+                            'event_id' => $request->event_id,
+                            'status' => $request->status,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                        if ($seAttendance > 0 & $attendance->count() > 0) {
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Attendance updated successfully!'
+                            ]);
+                        } else{
+                            return response()->json([
+                                'status' => 422,
+                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
+                            ]);
+                        }
+                    }
+
+                    return $seAttendance;
+                }
+
+            } catch (\Throwable $th) {
+                // return response()->json([
+                //     'status' => 500,
+                //     'message' => 'Server Error: Please contact system adminstrator.'
+                // ]);
+                throw $th;
+            }
+        }
+
+    // END: Update tblsingles_encounter and tblattendances
 
     /**
      * Update the specified resource in storage.
