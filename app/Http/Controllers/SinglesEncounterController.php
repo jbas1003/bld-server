@@ -279,10 +279,11 @@ class SinglesEncounterController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Server Error: Please contact system adminstrator.'
-            ]);
+            // return response()->json([
+            //     'status' => 500,
+            //     'message' => 'Server Error: Please contact system adminstrator.'
+            // ]);
+            return $th;
         }
     }
 
