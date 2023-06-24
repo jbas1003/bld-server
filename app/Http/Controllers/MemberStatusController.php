@@ -81,7 +81,7 @@ class MemberStatusController extends Controller
     public function show(MemberStatus $memberStatus)
     {
         try {
-            if ($memberStatus === true) {
+            if ($memberStatus->count() > 0) {
                 $status = MemberStatus::all();
                 return response()->json([
                     'status' => 200,
