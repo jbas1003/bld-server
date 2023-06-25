@@ -323,7 +323,6 @@ class SinglesEncounterController extends Controller
                             ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                             ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
                             ->where('tblmembers.civil_status', 'LIKE', '%single')
-                            // ->whereOr('tblsingles_encounter.event_id', '=', $request->event)
                             ->with(['emergency_contacts' => function($query) {
                                 $query->select('tblemergency_contacts.emergencyContact_id',
                                                 'tblemergency_contacts.name',
