@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Emails;
 use App\Models\Members;
+use App\Models\Addresses;
+use App\Models\Occupation;
+use App\Models\ContactInfo;
 use Illuminate\Http\Request;
+use App\Models\ContactNumbers;
 use App\Models\YouthEncounter;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -204,7 +210,7 @@ class YouthEncounterController extends Controller
 
                     // START: Singles Encounter Insert Query
 
-                        $SE = YouthEncounter::create([
+                        $YE = YouthEncounter::create([
                             'member_id' => $member->member_id,
                             'room' => $request->room,
                             'nation' => $request->nation,
@@ -223,7 +229,7 @@ class YouthEncounterController extends Controller
                         
                         foreach ($emergency_contacts as $contacts) {
                             $dataSet[] = [
-                                'seId' => $SE->seId,
+                                'yeId' => $YE->yeId,
                                 'name' => $contacts['name'],
                                 'mobile' => $contacts['mobile'],
                                 'email' => $contacts['email'],
@@ -244,7 +250,7 @@ class YouthEncounterController extends Controller
 
                         foreach ($inviters as $inviter) {
                             $inviterDataSet[] = [
-                                'seId' => $SE->seId,
+                                'yeId' => $YE->yeId,
                                 'name' => $inviter['name'],
                                 'relationship' => $inviter['relationship'],
                                 'created_by' => $inviter['created_by'],
