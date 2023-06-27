@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Emails;
+use App\Models\Invite;
 use App\Models\Members;
 use App\Models\Addresses;
 use App\Models\Occupation;
@@ -10,6 +11,7 @@ use App\Models\ContactInfo;
 use Illuminate\Http\Request;
 use App\Models\ContactNumbers;
 use App\Models\YouthEncounter;
+use App\Models\EmergencyContact;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -286,7 +288,23 @@ class YouthEncounterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, YouthEncounter $youthEncounter)
+    public function show(YouthEncounter $youthEncounter)
+    {
+        // 
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(YouthEncounter $youthEncounter)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, YouthEncounter $youthEncounter)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -428,23 +446,23 @@ class YouthEncounterController extends Controller
                 // END: Occupation Update Query
 
                 // START: Singles Encounter Update Query
-                    $getSe = SinglesEncounter::where('member_id', $getMember->member_id)->first();
+                    $getYe = YouthEncounter::where('member_id', $getMember->member_id)->first();
                     $dataSet = [];
                     $emergency_contacts = $request->emergency_contacts;
 
-                    if ($getSe) {
+                    if ($getYe) {
                         if ($request->event_id) {
-                            $SE = SinglesEncounter::where('seId', $getSe->seId)
+                            $SE = YouthEncounter::where('seId', $getYe->yeId)
                             ->update([
                                 'event_id' => $request->event_id,
                             ]);
                         }
 
                         // START: Emergency Contacts Update
-                            $getEmergencyContacts = EmergencyContact::where('seId', $getSe->seId)->get();
+                            $getEmergencyContacts = EmergencyContact::where('yeId', $getYe->yeId)->get();
 
                             $existingContactIds  = \DB::table('tblemergency_contacts')
-                                            ->where('seId', $getSe->seId)
+                                            ->where('seId', $getYe->yeId)
                                             ->pluck('emergencyContact_id')
                                             ->toArray();
 
@@ -467,7 +485,7 @@ class YouthEncounterController extends Controller
                                             ]);
                                 } else {
                                     \DB::table('tblemergency_contacts')->insert([
-                                        'seId' => $getSe->seId,
+                                        'yeId' => $getYe->yeId,
                                         'name' => $contact['name'],
                                         'mobile' => $contact['mobile'],
                                         'email' => $contact['email'],
@@ -482,10 +500,10 @@ class YouthEncounterController extends Controller
                         // START: Inviter Update
 
                             $inviters = $request->inviters;
-                            $getInviters = Invite::where('seId', $getSe->seId)->get();
+                            $getInviters = Invite::where('yeId', $getYe->yeId)->get();
 
                             $existingInviterIds = \DB::table('tblinvites')
-                                                        ->where('seId', $getSe->seId)
+                                                        ->where('yeId', $getYe->yeId)
                                                         ->pluck('invite_id')
                                                         ->toArray();
                             
@@ -506,7 +524,7 @@ class YouthEncounterController extends Controller
                                             ]);
                                 } else {
                                     \DB::table('tblinvites')->insert([
-                                        'seId' => $getSe->seId,
+                                        'yeId' => $getYe->yeId,
                                         'name' => $inviter['name'],
                                         'relationship' => $inviter['relationship'],
                                         'created_by' => $request->created_by,
@@ -621,22 +639,6 @@ class YouthEncounterController extends Controller
                 'message' => 'No records found.'
             ]);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(YouthEncounter $youthEncounter)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, YouthEncounter $youthEncounter)
-    {
-        //
     }
 
     /**
