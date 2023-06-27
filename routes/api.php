@@ -129,5 +129,6 @@ use App\Http\Controllers\SinglesEncounterController;
 
     Route::post('show_YE', [YouthEncounterController::class, 'showYE']);
     Route::post('YE', [YouthEncounterController::class, 'store']);
+    Route::put('update_YE', [YouthEncounterController::class, 'update']);
 
 // END: Youth Encounter Routes
