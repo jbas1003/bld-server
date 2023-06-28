@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\ContactNumbers;
 use App\Models\YouthEncounter;
 use App\Models\EmergencyContact;
+use App\Models\SinglesEncounter;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -541,7 +542,7 @@ class YouthEncounterController extends Controller
                             ]);
                             
                     } else {
-                        $SE = SinglesEncounter::create([
+                        $YE = YouthEncounter::create([
                             'member_id' => $getMember->member_id,
                             'room' => $request->room,
                             'tribe' => $request->tribe,
@@ -560,7 +561,7 @@ class YouthEncounterController extends Controller
                             
                             foreach ($emergency_contacts as $contacts) {
                                 $dataSet[] = [
-                                    'seId' => $SE->seId,
+                                    'yeId' => $YE->yeId,
                                     'name' => $contacts['name'],
                                     'mobile' => $contacts['mobile'],
                                     'email' => $contacts['email'],
@@ -597,7 +598,8 @@ class YouthEncounterController extends Controller
     }
 
     public function showYE(Request $request) {
-        $participants = Members::select('tblmembers.member_id', 'tblyouth_encounter.yeId', 'tblmembers.first_name', 'tblmembers.middle_name',
+        $participants = Members::select('tblmembers.member_id', 'tblyouth_encounter.yeId',
+                                        'tblmembers.first_name', 'tblmembers.middle_name',
                                         'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender',
                                         'tblmembers.birthday', 'tblmembers.civil_status', 'tblmembers.religion',
                                         'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1',
@@ -606,26 +608,44 @@ class YouthEncounterController extends Controller
                                         'tbloccupations.company', 'tbloccupations.address_line1 As work_addressLine1',
                                         'tbloccupations.address_line2 as work_addressLine2', 'tbloccupations.city As work_city',
                                         'tblyouth_encounter.status As attendance_status')
-                            ->leftJoin('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
-                            ->leftJoin('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
-                            ->leftJoin('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
-                            ->leftJoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
-                            ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
-                            ->leftJoin('tblyouth_encounter', 'tblmembers.member_id', '=', 'tblyouth_encounter.member_id')
-                            ->where('tblmembers.civil_status', 'LIKE', '%single')
-                            ->with(['emergency_contacts' => function($query) {
-                                $query->select('tblemergency_contacts.emergencyContact_id',
+                                        ->leftJoin('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
+                                        ->leftJoin('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                        ->leftJoin('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                        ->leftJoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                        ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
+                                        ->leftJoin('tblyouth_encounter', 'tblmembers.member_id', '=', 'tblyouth_encounter.member_id')
+                                        ->where('tblmembers.civil_status', 'LIKE', '%single')
+                                        ->with(['SeEmergencyContacts' => function ($query) {
+                                            $query->select('tblemergency_contacts.emergencyContact_id',
                                                 'tblemergency_contacts.name',
                                                 'tblemergency_contacts.mobile',
                                                 'tblemergency_contacts.email',
                                                 'tblemergency_contacts.relationship');
-                            }])
-                            ->with(['inviters' => function($query) {
-                                $query->select('tblinvites.invite_id',
+                                        }])
+                                        ->with(['SeInviters' => function ($query) {
+                                            $query->select('tblinvites.invite_id',
                                                 'tblinvites.name',
                                                 'tblinvites.relationship');
-                            }])
-                            ->get();
+                                        }])
+                                        ->with(['YeEmergencyContacts' => function ($query) {
+                                            $query->select('tblemergency_contacts.emergencyContact_id',
+                                                'tblemergency_contacts.name',
+                                                'tblemergency_contacts.mobile',
+                                                'tblemergency_contacts.email',
+                                                'tblemergency_contacts.relationship');
+                                        }])
+                                        ->with(['YeInviters' => function ($query) {
+                                            $query->select('tblinvites.invite_id',
+                                                'tblinvites.name',
+                                                'tblinvites.relationship');
+                                        }])
+                                        ->get();
+
+                                    // Retrieve emergency contacts for SinglesEncounter
+                                    $singlesEmergencyContacts = $participants->pluck('emergencyContacts')->collapse();
+
+                                    // Retrieve emergency contacts for YouthEncounter
+                                    $youthEmergencyContacts = $participants->pluck('tblyouth_encounter.emergencyContacts')->collapse();
 
         if ($participants->count() > 0) {
             return response()->json([
