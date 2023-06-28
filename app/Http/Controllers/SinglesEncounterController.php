@@ -323,17 +323,29 @@ class SinglesEncounterController extends Controller
                             ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                             ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
                             ->where('tblmembers.civil_status', 'LIKE', '%single')
-                            ->with(['emergency_contacts' => function($query) {
+                            ->with(['SeEmergencyContacts' => function ($query) {
                                 $query->select('tblemergency_contacts.emergencyContact_id',
-                                                'tblemergency_contacts.name',
-                                                'tblemergency_contacts.mobile',
-                                                'tblemergency_contacts.email',
-                                                'tblemergency_contacts.relationship');
+                                    'tblemergency_contacts.name',
+                                    'tblemergency_contacts.mobile',
+                                    'tblemergency_contacts.email',
+                                    'tblemergency_contacts.relationship');
                             }])
-                            ->with(['inviters' => function($query) {
+                            ->with(['SeInviters' => function ($query) {
                                 $query->select('tblinvites.invite_id',
-                                                'tblinvites.name',
-                                                'tblinvites.relationship');
+                                    'tblinvites.name',
+                                    'tblinvites.relationship');
+                            }])
+                            ->with(['YeEmergencyContacts' => function ($query) {
+                                $query->select('tblemergency_contacts.emergencyContact_id',
+                                    'tblemergency_contacts.name',
+                                    'tblemergency_contacts.mobile',
+                                    'tblemergency_contacts.email',
+                                    'tblemergency_contacts.relationship');
+                            }])
+                            ->with(['YeInviters' => function ($query) {
+                                $query->select('tblinvites.invite_id',
+                                    'tblinvites.name',
+                                    'tblinvites.relationship');
                             }])
                             ->get();
 
