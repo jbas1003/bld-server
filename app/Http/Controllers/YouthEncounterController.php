@@ -453,7 +453,7 @@ class YouthEncounterController extends Controller
 
                     if ($getYe) {
                         if ($request->event_id) {
-                            $SE = YouthEncounter::where('seId', $getYe->yeId)
+                            $YE = YouthEncounter::where('seId', $getYe->yeId)
                             ->update([
                                 'event_id' => $request->event_id,
                             ]);
@@ -463,7 +463,7 @@ class YouthEncounterController extends Controller
                             $getEmergencyContacts = EmergencyContact::where('yeId', $getYe->yeId)->get();
 
                             $existingContactIds  = \DB::table('tblemergency_contacts')
-                                            ->where('seId', $getYe->yeId)
+                                            ->where('yeId', $getYe->yeId)
                                             ->pluck('emergencyContact_id')
                                             ->toArray();
 
