@@ -615,6 +615,7 @@ class YouthEncounterController extends Controller
                                         ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                                         ->leftJoin('tblyouth_encounter', 'tblmembers.member_id', '=', 'tblyouth_encounter.member_id')
                                         ->where('tblmembers.civil_status', 'LIKE', '%single')
+                                        ->where('tblyouth_encounter.member_id', '!=', null)
                                         ->with(['SeEmergencyContacts' => function ($query) {
                                             $query->select('tblemergency_contacts.emergencyContact_id',
                                                 'tblemergency_contacts.name',
