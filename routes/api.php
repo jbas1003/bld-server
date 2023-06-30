@@ -13,6 +13,7 @@ use App\Http\Controllers\MemberStatusController;
 use App\Http\Controllers\ContactNumbersController;
 use App\Http\Controllers\MemberAccountsController;
 use App\Http\Controllers\SinglesEncounterController;
+use App\Http\Controllers\MarriageEncounterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,3 +124,12 @@ use App\Http\Controllers\SinglesEncounterController;
     Route::put('update_SE', [SinglesEncounterController::class, 'update']);
 
 // END: Singles Encounter Routes
+
+// START: Marriage Encounter Routes
+
+    Route::post('show_ME', [MarriageEncounterController::class, 'showME']);
+    Route::post('ME', [MarriageEncounterController::class, 'store']);
+    Route::post('meAttendance', [MarriageEncounter::class, 'createAttendance']);
+    Route::put('update_ME', [MarriageEncounter::class, 'update']);
+
+// END: Marraige Encounter Routes
