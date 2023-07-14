@@ -9,16 +9,16 @@ use App\Models\Addresses;
 use App\Models\Attendance;
 use App\Models\Occupation;
 use App\Models\ContactInfo;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ContactNumbers;
+use App\Models\YouthEncounter;
 use App\Models\EmergencyContact;
 use App\Models\SinglesEncounter;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class SinglesEncounterController extends Controller
+class YouthEncounterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -144,7 +144,7 @@ class SinglesEncounterController extends Controller
                             'religion' => $request->religion,
                             'baptism' => $request->baptized,
                             'confirmation' => $request->confirmed,
-                            'member_status_id' => 1,
+                            'member_status_id' => $request->member_status_id,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -214,7 +214,7 @@ class SinglesEncounterController extends Controller
 
                     // START: Singles Encounter Insert Query
 
-                        $SE = SinglesEncounter::create([
+                        $YE = YouthEncounter::create([
                             'member_id' => $member->member_id,
                             'room' => $request->room,
                             'nation' => $request->nation,
@@ -233,7 +233,7 @@ class SinglesEncounterController extends Controller
                         
                         foreach ($emergency_contacts as $contacts) {
                             $dataSet[] = [
-                                'seId' => $SE->seId,
+                                'yeId' => $YE->yeId,
                                 'name' => $contacts['name'],
                                 'mobile' => $contacts['mobile'],
                                 'email' => $contacts['email'],
@@ -254,7 +254,7 @@ class SinglesEncounterController extends Controller
 
                         foreach ($inviters as $inviter) {
                             $inviterDataSet[] = [
-                                'seId' => $SE->seId,
+                                'yeId' => $YE->yeId,
                                 'name' => $inviter['name'],
                                 'relationship' => $inviter['relationship'],
                                 'created_by' => $inviter['created_by'],
@@ -290,169 +290,23 @@ class SinglesEncounterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SinglesEncounter $singlesEncounter)
+    public function show(YouthEncounter $youthEncounter)
     {
-        if ($singlesEncounter->count() > 0) {
-            return response()->json([
-                'status' => 200,
-                'message' => 'Success!',
-                'body' => $singlesEncounter
-            ]);
-        } else {
-            return response()->json([
-                'status' => 422,
-                'message' => 'No records found.'
-            ]);
-        }
-    }
-
-    public function showSE (Request $request) {
-        $participants = Members::select('tblmembers.member_id', 'tblsingles_encounter.seId', 'tblmembers.first_name', 'tblmembers.middle_name',
-                                        'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender',
-                                        'tblmembers.birthday', 'tblmembers.civil_status', 'tblmembers.religion',
-                                        'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1',
-                                        'tbladdresses.address_line2', 'tbladdresses.city', 'tblcontact_numbers.mobile',
-                                        'tblemails.email', 'tbloccupations.occupation_name', 'tbloccupations.specialty',
-                                        'tbloccupations.company', 'tbloccupations.address_line1 As work_addressLine1',
-                                        'tbloccupations.address_line2 as work_addressLine2', 'tbloccupations.city As work_city',
-                                        'tblsingles_encounter.status As attendance_status')
-                            ->leftJoin('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
-                            ->leftJoin('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
-                            ->leftJoin('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
-                            ->leftJoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
-                            ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
-                            ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
-                            ->where('tblmembers.civil_status', 'LIKE', '%single')
-                            ->with(['SeEmergencyContacts' => function ($query) {
-                                $query->select('tblemergency_contacts.emergencyContact_id',
-                                    'tblemergency_contacts.name',
-                                    'tblemergency_contacts.mobile',
-                                    'tblemergency_contacts.email',
-                                    'tblemergency_contacts.relationship');
-                            }])
-                            ->with(['SeInviters' => function ($query) {
-                                $query->select('tblinvites.invite_id',
-                                    'tblinvites.name',
-                                    'tblinvites.relationship');
-                            }])
-                            ->with(['YeEmergencyContacts' => function ($query) {
-                                $query->select('tblemergency_contacts.emergencyContact_id',
-                                    'tblemergency_contacts.name',
-                                    'tblemergency_contacts.mobile',
-                                    'tblemergency_contacts.email',
-                                    'tblemergency_contacts.relationship');
-                            }])
-                            ->with(['YeInviters' => function ($query) {
-                                $query->select('tblinvites.invite_id',
-                                    'tblinvites.name',
-                                    'tblinvites.relationship');
-                            }])
-                            ->get();
-
-        if ($participants->count() > 0) {
-            return response()->json([
-                'status' => 200,
-                'message' => 'Success!',
-                'body' => $participants
-            ]);
-        } else {
-            return response()->json([
-                'status' => 422,
-                'message' => 'No records found.'
-            ]);
-        }
+        // 
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SinglesEncounter $singlesEncounter)
+    public function edit(YouthEncounter $youthEncounter)
     {
         //
     }
 
-    // START: Update tblsingles_encounter and tblattendances
-
-        public function createAttendance(Request $request) {
-            try {
-                $validator = Validator::make($request->all(), [
-                    'member_id' => 'required|integer',
-                    'event_id' => 'required|integer',
-                    'status' => 'required|string|max:5',
-                    'created_by' => 'nullable|integer'
-                ]);
-
-                if ($validator->fails()) {
-                    return response()->json([
-                        'status' => 422,
-                        'message' => $validator->messages(),
-                    ]);
-                } else {
-                    $seAttendance = SinglesEncounter::where('member_id', '=', $request->member_id)
-                                ->update([
-                                    'event_id' => $request->event_id,
-                                    'status' => $request->status
-                                ]);
-                    
-                    $existingAttendance = Attendance::where('member_id', '=', $request->member_id)->first();
-
-                    if ($existingAttendance) {
-                        $existingAttendance->update([
-                            'event_id' => $request->event_id,
-                            'status' => $request->status
-                        ]);
-
-                        if ($seAttendance > 0 & $existingAttendance->count() > 0) {
-                            return response()->json([
-                                'status' => 200,
-                                'message' => 'Attendance updated successfully!'
-                            ]);
-                        } else{
-                            return response()->json([
-                                'status' => 422,
-                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
-                            ]);
-                        }
-                    } else{
-                        $attendance = Attendance::create([
-                            'member_id' => $request->member_id,
-                            'event_id' => $request->event_id,
-                            'status' => $request->status,
-                            'created_by' => $request->created_by,
-                            'created_on' => now()
-                        ]);
-
-                        if ($seAttendance > 0 & $attendance->count() > 0) {
-                            return response()->json([
-                                'status' => 200,
-                                'message' => 'Attendance updated successfully!'
-                            ]);
-                        } else{
-                            return response()->json([
-                                'status' => 422,
-                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
-                            ]);
-                        }
-                    }
-
-                    return $seAttendance;
-                }
-
-            } catch (\Throwable $th) {
-                // return response()->json([
-                //     'status' => 500,
-                //     'message' => 'Server Error: Please contact system adminstrator.'
-                // ]);
-                throw $th;
-            }
-        }
-
-    // END: Update tblsingles_encounter and tblattendances
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SinglesEncounter $singlesEncounter)
+    public function update(Request $request, YouthEncounter $youthEncounter)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -594,23 +448,23 @@ class SinglesEncounterController extends Controller
                 // END: Occupation Update Query
 
                 // START: Singles Encounter Update Query
-                    $getSe = SinglesEncounter::where('member_id', $getMember->member_id)->first();
+                    $getYe = YouthEncounter::where('member_id', $getMember->member_id)->first();
                     $dataSet = [];
                     $emergency_contacts = $request->emergency_contacts;
 
-                    if ($getSe) {
+                    if ($getYe) {
                         if ($request->event_id) {
-                            $SE = SinglesEncounter::where('seId', $getSe->seId)
+                            $YE = YouthEncounter::where('seId', $getYe->yeId)
                             ->update([
                                 'event_id' => $request->event_id,
                             ]);
                         }
 
                         // START: Emergency Contacts Update
-                            $getEmergencyContacts = EmergencyContact::where('seId', $getSe->seId)->get();
+                            $getEmergencyContacts = EmergencyContact::where('yeId', $getYe->yeId)->get();
 
                             $existingContactIds  = \DB::table('tblemergency_contacts')
-                                            ->where('seId', $getSe->seId)
+                                            ->where('yeId', $getYe->yeId)
                                             ->pluck('emergencyContact_id')
                                             ->toArray();
 
@@ -633,7 +487,7 @@ class SinglesEncounterController extends Controller
                                             ]);
                                 } else {
                                     \DB::table('tblemergency_contacts')->insert([
-                                        'seId' => $getSe->seId,
+                                        'yeId' => $getYe->yeId,
                                         'name' => $contact['name'],
                                         'mobile' => $contact['mobile'],
                                         'email' => $contact['email'],
@@ -648,10 +502,10 @@ class SinglesEncounterController extends Controller
                         // START: Inviter Update
 
                             $inviters = $request->inviters;
-                            $getInviters = Invite::where('seId', $getSe->seId)->get();
+                            $getInviters = Invite::where('yeId', $getYe->yeId)->get();
 
                             $existingInviterIds = \DB::table('tblinvites')
-                                                        ->where('seId', $getSe->seId)
+                                                        ->where('yeId', $getYe->yeId)
                                                         ->pluck('invite_id')
                                                         ->toArray();
                             
@@ -672,7 +526,7 @@ class SinglesEncounterController extends Controller
                                             ]);
                                 } else {
                                     \DB::table('tblinvites')->insert([
-                                        'seId' => $getSe->seId,
+                                        'yeId' => $getYe->yeId,
                                         'name' => $inviter['name'],
                                         'relationship' => $inviter['relationship'],
                                         'created_by' => $request->created_by,
@@ -689,7 +543,7 @@ class SinglesEncounterController extends Controller
                             ]);
                             
                     } else {
-                        $SE = SinglesEncounter::create([
+                        $YE = YouthEncounter::create([
                             'member_id' => $getMember->member_id,
                             'room' => $request->room,
                             'tribe' => $request->tribe,
@@ -708,7 +562,7 @@ class SinglesEncounterController extends Controller
                             
                             foreach ($emergency_contacts as $contacts) {
                                 $dataSet[] = [
-                                    'seId' => $SE->seId,
+                                    'yeId' => $YE->yeId,
                                     'name' => $contacts['name'],
                                     'mobile' => $contacts['mobile'],
                                     'email' => $contacts['email'],
@@ -744,10 +598,149 @@ class SinglesEncounterController extends Controller
         }
     }
 
+    public function showYE(Request $request) {
+        $participants = Members::select('tblmembers.member_id', 'tblyouth_encounter.yeId',
+                                        'tblmembers.first_name', 'tblmembers.middle_name',
+                                        'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender',
+                                        'tblmembers.birthday', 'tblmembers.civil_status', 'tblmembers.religion',
+                                        'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1',
+                                        'tbladdresses.address_line2', 'tbladdresses.city', 'tblcontact_numbers.mobile',
+                                        'tblemails.email', 'tbloccupations.occupation_name', 'tbloccupations.specialty',
+                                        'tbloccupations.company', 'tbloccupations.address_line1 As work_addressLine1',
+                                        'tbloccupations.address_line2 as work_addressLine2', 'tbloccupations.city As work_city',
+                                        'tblyouth_encounter.status As attendance_status')
+                                        ->leftJoin('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
+                                        ->leftJoin('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                        ->leftJoin('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                        ->leftJoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                        ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
+                                        ->leftJoin('tblyouth_encounter', 'tblmembers.member_id', '=', 'tblyouth_encounter.member_id')
+                                        ->where('tblmembers.civil_status', 'LIKE', '%single')
+                                        ->where('tblyouth_encounter.member_id', '!=', null)
+                                        ->with(['SeEmergencyContacts' => function ($query) {
+                                            $query->select('tblemergency_contacts.emergencyContact_id',
+                                                'tblemergency_contacts.name',
+                                                'tblemergency_contacts.mobile',
+                                                'tblemergency_contacts.email',
+                                                'tblemergency_contacts.relationship');
+                                        }])
+                                        ->with(['SeInviters' => function ($query) {
+                                            $query->select('tblinvites.invite_id',
+                                                'tblinvites.name',
+                                                'tblinvites.relationship');
+                                        }])
+                                        ->with(['YeEmergencyContacts' => function ($query) {
+                                            $query->select('tblemergency_contacts.emergencyContact_id',
+                                                'tblemergency_contacts.name',
+                                                'tblemergency_contacts.mobile',
+                                                'tblemergency_contacts.email',
+                                                'tblemergency_contacts.relationship');
+                                        }])
+                                        ->with(['YeInviters' => function ($query) {
+                                            $query->select('tblinvites.invite_id',
+                                                'tblinvites.name',
+                                                'tblinvites.relationship');
+                                        }])
+                                        ->get();
+
+                                    // Retrieve emergency contacts for SinglesEncounter
+                                    $singlesEmergencyContacts = $participants->pluck('emergencyContacts')->collapse();
+
+                                    // Retrieve emergency contacts for YouthEncounter
+                                    $youthEmergencyContacts = $participants->pluck('tblyouth_encounter.emergencyContacts')->collapse();
+
+        if ($participants->count() > 0) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Success!',
+                'body' => $participants
+            ]);
+        } else {
+            return response()->json([
+                'status' => 422,
+                'message' => 'No records found.'
+            ]);
+        }
+    }
+
+    public function createAttendance(Request $request) {
+            try {
+                $validator = Validator::make($request->all(), [
+                    'member_id' => 'required|integer',
+                    'event_id' => 'required|integer',
+                    'status' => 'required|string|max:5',
+                    'created_by' => 'nullable|integer'
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => 422,
+                        'message' => $validator->messages(),
+                    ]);
+                } else {
+                    $yeAttendance = YouthEncounter::where('member_id', '=', $request->member_id)
+                                ->update([
+                                    'event_id' => $request->event_id,
+                                    'status' => $request->status
+                                ]);
+                    
+                    $existingAttendance = Attendance::where('member_id', '=', $request->member_id)->first();
+
+                    if ($existingAttendance) {
+                        $existingAttendance->update([
+                            'event_id' => $request->event_id,
+                            'status' => $request->status
+                        ]);
+
+                        if ($yeAttendance > 0 & $existingAttendance->count() > 0) {
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Attendance updated successfully!'
+                            ]);
+                        } else{
+                            return response()->json([
+                                'status' => 422,
+                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
+                            ]);
+                        }
+                    } else{
+                        $attendance = Attendance::create([
+                            'member_id' => $request->member_id,
+                            'event_id' => $request->event_id,
+                            'status' => $request->status,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                        if ($yeAttendance > 0 & $attendance->count() > 0) {
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Attendance updated successfully!'
+                            ]);
+                        } else{
+                            return response()->json([
+                                'status' => 422,
+                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
+                            ]);
+                        }
+                    }
+
+                    return $seAttendance;
+                }
+
+            } catch (\Throwable $th) {
+                // return response()->json([
+                //     'status' => 500,
+                //     'message' => 'Server Error: Please contact system adminstrator.'
+                // ]);
+                throw $th;
+            }
+        }
+
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SinglesEncounter $singlesEncounter)
+    public function destroy(YouthEncounter $youthEncounter)
     {
         //
     }
