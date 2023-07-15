@@ -5,6 +5,8 @@
 /public/storage
 /storage/*.key
 /vendor
+/bld-server.zip
+/public/public.zip
 .env
 .env.backup
 .env.production
