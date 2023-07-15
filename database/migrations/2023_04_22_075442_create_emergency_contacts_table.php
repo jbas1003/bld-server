@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tblemergency_contacts', function (Blueprint $table) {
             $table->id('emergencyContact_id');
             $table->integer('seId')->nullable();
+            $table->integer('yeId')->nullable();
             $table->string('name')->nullable();
             $table->string('mobile')->nullable();
             $table->string('email')->nullable();
