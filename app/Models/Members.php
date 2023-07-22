@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Member As Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Members extends Authenticatable
+class Members extends Model
 {
     use HasFactory, HasApiTokens, Notifiable;
 
@@ -38,7 +38,7 @@ class Members extends Authenticatable
     ];
 
     public $timestamps = false;
-    
+
     public function SeEmergencyContacts(): HasManyThrough
     {
         return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
