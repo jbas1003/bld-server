@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Members;
 use App\Models\ContactInfo;
 use App\Models\YouthEncounter;
 use App\Models\EmergencyContact;
 use App\Models\SinglesEncounter;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\Member As Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Members extends Authenticatable
@@ -38,7 +37,7 @@ class Members extends Authenticatable
     ];
 
     public $timestamps = false;
-    
+
     public function SeEmergencyContacts(): HasManyThrough
     {
         return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
