@@ -8,6 +8,7 @@ use App\Models\YouthEncounter;
 use App\Models\EmergencyContact;
 use App\Models\SinglesEncounter;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
