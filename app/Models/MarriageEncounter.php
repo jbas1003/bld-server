@@ -14,7 +14,6 @@ class MarriageEncounter extends Model
     protected $fillable = [
         'member_id',
         'room',
-        'spouse',
         'event_id',
         'status',
         'created_by',
