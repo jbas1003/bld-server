@@ -121,7 +121,7 @@ class MemberAccountsController extends Controller
      */
     public function show(MemberAccounts $memberAccounts)
     {
-        
+
         try {
             // if ($memberAccounts->count() > 0) {
             //     $accounts = MemberAccounts::all();
@@ -142,7 +142,7 @@ class MemberAccountsController extends Controller
                                 ->select('tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.member_id',
                                     'tblmember_accounts.memberAccount_id', DB::raw('IFNULL(tblmember_accounts.username, "") As username'))
                                 ->get();
-                                
+
             return response()->json([
                 'status' => 200,
                 'body' => $accounts
@@ -178,7 +178,7 @@ class MemberAccountsController extends Controller
                 ]);
             } else {
                 $account = MemberAccounts::find($request->memberAccount_id);
-                
+
                 if ($account->username === $request->username) {
                     return responsse()->json([
                         'status' => 422,
@@ -188,7 +188,7 @@ class MemberAccountsController extends Controller
                     $account->update([
                         'username' => $request->username
                     ]);
-    
+
                     if ($account) {
                         return response()->json([
                             'status' => 200,
