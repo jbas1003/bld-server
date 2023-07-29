@@ -12,6 +12,7 @@ use App\Http\Controllers\OccupationController;
 use App\Http\Controllers\MemberStatusController;
 use App\Http\Controllers\ContactNumbersController;
 use App\Http\Controllers\MemberAccountsController;
+use App\Http\Controllers\YouthEncounterController;
 use App\Http\Controllers\SinglesEncounterController;
 use App\Http\Controllers\MarriageEncounterController;
 
@@ -124,6 +125,15 @@ use App\Http\Controllers\MarriageEncounterController;
     Route::put('update_SE', [SinglesEncounterController::class, 'update']);
 
 // END: Singles Encounter Routes
+
+// START: Youth Encounter Routes
+
+    Route::post('show_YE', [YouthEncounterController::class, 'showYE']);
+    Route::post('YE', [YouthEncounterController::class, 'store']);
+    Route::put('update_YE', [YouthEncounterController::class, 'update']);
+    Route::post('yeAttendance', [YouthEncounterController::class, 'createAttendance']);
+
+// END: Youth Encounter Routes
 
 // START: Marriage Encounter Routes
 

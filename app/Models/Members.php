@@ -4,16 +4,18 @@ namespace App\Models;
 
 use App\Models\Members;
 use App\Models\ContactInfo;
+use App\Models\YouthEncounter;
 use App\Models\EmergencyContact;
 use App\Models\SinglesEncounter;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Member As Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Members extends Authenticatable
+class Members extends Model
 {
     use HasFactory, HasApiTokens, Notifiable;
 
@@ -37,14 +39,24 @@ class Members extends Authenticatable
     ];
 
     public $timestamps = false;
-    
-    public function emergency_contacts(): HasManyThrough
+
+    public function SeEmergencyContacts(): HasManyThrough
     {
         return $this->hasManyThrough(EmergencyContact::class, SinglesEncounter::class, 'member_id', 'seId');
     }
 
-    public function inviters(): HasManyThrough
+    public function SeInviters(): HasManyThrough
     {
         return $this->hasManyThrough(Invite::class, SinglesEncounter::class, 'member_id', 'seId');
+    }
+
+    public function YeEmergencyContacts(): HasManyThrough
+    {
+        return $this->hasManyThrough(EmergencyContact::class, YouthEncounter::class, 'member_id', 'yeId');
+    }
+
+    public function YeInviters(): HasManyThrough
+    {
+        return $this->hasManyThrough(Invite::class, YouthEncounter::class, 'member_id', 'yeId');
     }
 }
