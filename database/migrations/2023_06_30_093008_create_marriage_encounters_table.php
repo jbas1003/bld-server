@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('meId');
             $table->integer('member_id')->nullable();
             $table->string('room')->nullable();
-            $table->string('spouse')->nullable();
             $table->integer('event_id')->nullable();
             $table->string('status')->nullable();
             $table->integer('created_by');
