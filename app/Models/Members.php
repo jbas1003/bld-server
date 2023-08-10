@@ -29,7 +29,7 @@ class Members extends Model
         'birthday',
         'gender',
         'civil_status',
-        'spouse_member_id',
+        'spouse',
         'religion',
         'baptism',
         'confirmation',
