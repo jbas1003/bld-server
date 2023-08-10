@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use App\Models\Emails;
 use App\Models\Members;
+use App\Models\Children;
 use App\Models\Addresses;
 use App\Models\Attendance;
 use App\Models\Occupation;
@@ -14,6 +15,7 @@ use App\Models\ContactNumbers;
 use App\Models\EmergencyContact;
 use App\Models\MarriageEncounter;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class MarriageEncounterController extends Controller
 {
@@ -38,7 +40,248 @@ class MarriageEncounterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                // START: Table Members Data
+
+                    'first_name' => 'nullable|string|max:191',
+                    'middle_name' => 'nullable|string|max:191',
+                    'last_name' => 'nullable|string|max:191',
+                    'nickname' => 'nullable|string|max:191',
+                    'birthday' => 'nullable|string|max:191',
+                    'gender' => 'nullable|string|max:90',
+                    'civil_status' => 'nullable|string|max:50',
+                    'religion' => 'nullable|string|max:191',
+                    'baptized' => 'nullable|string|max:30',
+                    'confirmed' => 'nullable|string|max:30',
+                    'member_status_id' => 'nullable|integer',
+                    'created_by' => 'required|integer',
+
+                // END: Table Members Data
+
+                // START: Table Address Data
+
+                    'member_addressLine1' => 'nullable|string|max:255',
+                    'member_addressLine2' => 'nullable|string|max:255',
+                    'member_city' => 'nullable|string|max:255',
+
+                // END: Table Address Data
+
+                // START: Table ContactNumbers Data
+
+                    'member_mobile' => 'nullable|string|max:20',
+
+                // END: Table ContactNumbers Data
+
+                // START: Table Emails Data
+
+                    'member_email' => 'nullable|string|max:191',
+
+                // END: Table Emails Data
+
+                // Start: Table Occupations Data
+
+                    'occupation' => 'nullable|string|max:191',
+                    'specialty' => 'nullable|string|max:191',
+                    'company' => 'nullable|string|max:191',
+                    'company_addressLine1' => 'nullable|string|max:255',
+                    'company_addressLine2' => 'nullable|string|max:255',
+                    'city' => 'nullable|string|max:191',
+
+                // END: Table Occupations Data
+
+                // START: Table EmergencyContacts Data
+
+                    'children' => 'nullable|array',
+
+                // END: Table EmergencyContacts Data
+
+                // START: Table Invite Data
+
+                    'inviter' => 'nullable|array',
+
+                // END: Table Invite Data
+
+                // START: Table Marriage Encounter Data
+
+                    'room' => 'nullable|string|max:50',
+
+                // END: Table Marriage Encounter Data
+
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validator->messages(),
+                ]);
+            } else {
+                $memberExist = ContactInfo::join('tblmembers', 'tblcontact_infos.member_id', '=', 'tblmembers.member_id')
+                                          ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                          ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                          ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                          ->first();
+
+                if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
+                ], 422);
+                } else {
+                    // START: Members Insert Query
+
+                        $member = Members::create([
+                            'first_name' => $request->first_name,
+                            'middle_name' => $request->middle_name,
+                            'last_name' => $request->last_name,
+                            'nickname' => $request->nickname,
+                            'birthday' => $request->birthday,
+                            'gender' => $request->gender,
+                            'civil_status' => $request->civil_status,
+                            'religion' => $request->religion,
+                            'baptism' => $request->baptized,
+                            'confirmation' => $request->confirmed,
+                            'member_status_id' => 1,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                    // END: Members Insert Query
+
+                    // START: Address Insert Query
+
+                        $address = Addresses::create([
+                            'address_line1' => $request->member_addressLine1,
+                            'address_line2' => $request->member_addressLine2,
+                            'city' => $request->member_city,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                    // END: Address Insert Query
+
+                    // START: Contact Number Insert Query
+
+                        $contactNumber = ContactNumbers::create([
+                            'mobile' => $request->member_mobile,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                    // END: Contact Number Insert Query
+
+                    // START: Email Insert Query
+
+                        $email = Emails::create([
+                            'email' => $request->member_email,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                    // END: Email Insert Query
+
+                    // START: Occupation Insert Query
+
+                        $occupation = Occupation::create([
+                            'occupation_name' => $request->occupation,
+                            'specialty' => $request->specialty,
+                            'company' => $request->company,
+                            'address_line1' => $request->company_addressLine1,
+                            'address_line2' => $request->company_addressLine2,
+                            'city' => $request->company_city,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                    // END: Occupation Insert Query
+
+                    // START: Contact Info Insert Query
+
+                        $contactInfo = ContactInfo::create([
+                            'member_id' => $member->member_id,
+                            'address_id' => $address->id,
+                            'contactNumber_id' => $contactNumber->id,
+                            'email_id' => $email->id,
+                            'occupation_id' => $occupation->id,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                    // END: Contact Info Insert Query
+
+                    // START: Singles Encounter Insert Query
+
+                        $SE = SinglesEncounter::create([
+                            'member_id' => $member->member_id,
+                            'room' => $request->room,
+                            'nation' => $request->nation,
+                            'event_id' => $request->event_id,
+                            'status' => $request->status,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                    // END: Singles Encounter Insert Query
+
+                    // START: Emergency Contact Insert Query
+
+                        $dataSet = [];
+                        $emergency_contacts = $request->emergency_contacts;
+
+                        foreach ($emergency_contacts as $contacts) {
+                            $dataSet[] = [
+                                'seId' => $SE->seId,
+                                'name' => $contacts['name'],
+                                'mobile' => $contacts['mobile'],
+                                'email' => $contacts['email'],
+                                'relationship' => $contacts['relationship'],
+                                'created_by' => $contacts['created_by'],
+                                'created_on' => now()
+                            ];
+                        }
+
+                        $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
+
+                    // END: Emergency Contact Insert Query
+
+                    // START: Imvite Insert Query
+
+                        $inviterDataSet = [];
+                        $inviters = $request->inviter;
+
+                        foreach ($inviters as $inviter) {
+                            $inviterDataSet[] = [
+                                'seId' => $SE->seId,
+                                'name' => $inviter['name'],
+                                'relationship' => $inviter['relationship'],
+                                'created_by' => $inviter['created_by'],
+                                'created_on' => now()
+                            ];
+                        }
+
+                        $inviterData = DB::table('tblinvites')->insert($inviterDataSet);
+
+                    // END: Invite Insert Query
+
+                    if ($contactInfo->count() > 0 & $inviterData === true) {
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Adding participant was successful!'
+                        ]);
+                    } else {
+                        return response()->json([
+                            'status' => 500,
+                            'message' => 'A problem was encountered while adding participant records. Please acontact system administrators.'
+                        ]);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Server Error: Please contact system adminstrator.'
+            ]);
+        }
     }
 
     /**
@@ -77,26 +320,14 @@ class MarriageEncounterController extends Controller
                             ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                             ->leftJoin('tblmarriage_encounter', 'tblmembers.member_id', '=', 'tblmarriage_encounter.member_id')
                             ->where('tblmembers.civil_status', 'LIKE', '%marriage')
-                            ->with(['SeEmergencyContacts' => function ($query) {
-                                $query->select('tblemergency_contacts.emergencyContact_id',
-                                    'tblemergency_contacts.name',
-                                    'tblemergency_contacts.mobile',
-                                    'tblemergency_contacts.email',
-                                    'tblemergency_contacts.relationship');
+                            ->with(['MeChildren' => function ($query) {
+                                $query->select('tblchildren.child_id',
+                                    'tblchildren.first_name',
+                                    'tblchildren.middle_name',
+                                    'tblchildren.last_name',
+                                    'tblchildren.age');
                             }])
-                            ->with(['SeInviters' => function ($query) {
-                                $query->select('tblinvites.invite_id',
-                                    'tblinvites.name',
-                                    'tblinvites.relationship');
-                            }])
-                            ->with(['YeEmergencyContacts' => function ($query) {
-                                $query->select('tblemergency_contacts.emergencyContact_id',
-                                    'tblemergency_contacts.name',
-                                    'tblemergency_contacts.mobile',
-                                    'tblemergency_contacts.email',
-                                    'tblemergency_contacts.relationship');
-                            }])
-                            ->with(['YeInviters' => function ($query) {
+                            ->with(['MeInviters' => function ($query) {
                                 $query->select('tblinvites.invite_id',
                                     'tblinvites.name',
                                     'tblinvites.relationship');
@@ -260,7 +491,7 @@ class MarriageEncounterController extends Controller
 
                 // START: Table EmergencyContacts Data
 
-                    'emergency_contacts' => 'nullable|array',
+                    'children' => 'nullable|array',
 
                 // END: Table EmergencyContacts Data
 
@@ -347,7 +578,7 @@ class MarriageEncounterController extends Controller
 
                 // END: Occupation Update Query
 
-                // START: Singles Encounter Update Query
+                // START: Marriage Encounter Update Query
                     $getMe = MarriageEncounter::where('member_id', $getMember->member_id)->first();
                     $dataSet = [];
                     $emergency_contacts = $request->emergency_contacts;
@@ -361,37 +592,37 @@ class MarriageEncounterController extends Controller
                         }
 
                         // START: Emergency Contacts Update
-                            $getEmergencyContacts = EmergencyContact::where('meId', $getMe->meId)->get();
+                            $getChildren = Children::where('meId', $getMe->meId)->get();
 
-                            $existingContactIds  = DB::table('tblemergency_contacts')
+                            $existingContactIds  = DB::table('tblchildren')
                                             ->where('meId', $getMe->meId)
-                                            ->pluck('emergencyContact_id')
+                                            ->pluck('child_id')
                                             ->toArray();
 
-                            $contactIdsToDelete = array_diff($existingContactIds, array_column($emergency_contacts, 'emergencyContact_id'));
+                            $contactIdsToDelete = array_diff($existingContactIds, array_column($emergency_contacts, 'child_id'));
 
-                            $deleteContact = \DB::table('tblemergency_contacts')
-                                ->whereIn('emergencyContact_id', $contactIdsToDelete)
+                            $deleteContact = \DB::table('tblchildren')
+                                ->whereIn('child_id', $contactIdsToDelete)
                                 ->delete();
 
                             foreach ($emergency_contacts as $contact) {
-                                if (isset($contact['emergencyContact_id'])) {
-                                    if (in_array($contact['emergencyContact_id'], $existingContactIds))
-                                        \DB::table('tblemergency_contacts')
-                                            ->where('emergencyContact_id', $contact['emergencyContact_id'])
+                                if (isset($contact['child_id'])) {
+                                    if (in_array($contact['child_id'], $existingContactIds))
+                                        \DB::table('tblchildren')
+                                            ->where('child_id', $contact['child_id'])
                                             ->update([
-                                                'name' => $contact['name'],
-                                                'mobile' => $contact['mobile'],
-                                                'email' => $contact['email'],
-                                                'relationship' => $contact['relationship']
+                                                'first_name' => $contact['first_name'],
+                                                'middle_name' => $contact['middle_name'],
+                                                'last_name' => $contact['last_name'],
+                                                'age' => $contact['age']
                                             ]);
                                 } else {
-                                    \DB::table('tblemergency_contacts')->insert([
+                                    \DB::table('tblchildren')->insert([
                                         'meId' => $getMe->meId,
-                                        'name' => $contact['name'],
-                                        'mobile' => $contact['mobile'],
-                                        'email' => $contact['email'],
-                                        'relationship' => $contact['relationship'],
+                                        'first_name' => $contact['first_name'],
+                                        'middle_name' => $contact['middle_name'],
+                                        'last_name' => $contact['last_name'],
+                                        'age' => $contact['age'],
                                         'created_by' => $request->created_by,
                                         'created_on' => now()
                                     ]);
@@ -443,11 +674,9 @@ class MarriageEncounterController extends Controller
                             ]);
 
                     } else {
-                        $SE = SinglesEncounter::create([
+                        $ME = MarriageEncounter::create([
                             'member_id' => $getMember->member_id,
                             'room' => $request->room,
-                            'tribe' => $request->tribe,
-                            'nation' => $request->nation,
                             'event_id' => $request->event_id,
                             'status' => $request->status,
                             'created_by' => $request->created_by,
@@ -458,25 +687,25 @@ class MarriageEncounterController extends Controller
                         // START: Emergency Contact Insert Query
 
                             $dataSet = [];
-                            $emergency_contacts = $request->emergency_contacts;
+                            $children = $request->children;
 
-                            foreach ($emergency_contacts as $contacts) {
+                            foreach ($children as $child) {
                                 $dataSet[] = [
-                                    'meId' => $SE->meId,
-                                    'name' => $contacts['name'],
-                                    'mobile' => $contacts['mobile'],
-                                    'email' => $contacts['email'],
-                                    'relationship' => $contacts['relationship'],
+                                    'meId' => $ME->meId,
+                                    'first_name' => $child['first_name'],
+                                    'middle_name' => $child['middle_name'],
+                                    'last_name' => $child['last_name'],
+                                    'age' => $child['age'],
                                     'created_by' => $request->created_by,
                                     'created_on' => now()
                                 ];
                             }
 
-                            $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
+                            $ME_children = DB::table('tblchildren')->insert($dataSet);
 
                         // END: Emergency Contact Insert Query
 
-                        if ($emergencyContacts === true) {
+                        if ($ME_children === true) {
                             return response()->json([
                                 'status' => 200,
                                 'message' => 'Update Success!'
