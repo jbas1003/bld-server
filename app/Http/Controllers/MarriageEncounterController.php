@@ -50,6 +50,7 @@ class MarriageEncounterController extends Controller
                     'nickname' => 'nullable|string|max:191',
                     'birthday' => 'nullable|string|max:191',
                     'gender' => 'nullable|string|max:90',
+                    'spouse' => 'nullable|string|max:100',
                     'civil_status' => 'nullable|string|max:50',
                     'religion' => 'nullable|string|max:191',
                     'baptized' => 'nullable|string|max:30',
@@ -211,10 +212,9 @@ class MarriageEncounterController extends Controller
 
                     // START: Singles Encounter Insert Query
 
-                        $SE = SinglesEncounter::create([
+                        $ME = MarriageEncounter::create([
                             'member_id' => $member->member_id,
                             'room' => $request->room,
-                            'nation' => $request->nation,
                             'event_id' => $request->event_id,
                             'status' => $request->status,
                             'created_by' => $request->created_by,
@@ -226,21 +226,21 @@ class MarriageEncounterController extends Controller
                     // START: Emergency Contact Insert Query
 
                         $dataSet = [];
-                        $emergency_contacts = $request->emergency_contacts;
+                        $children = $request->children;
 
-                        foreach ($emergency_contacts as $contacts) {
+                        foreach ($children as $child) {
                             $dataSet[] = [
-                                'seId' => $SE->seId,
-                                'name' => $contacts['name'],
-                                'mobile' => $contacts['mobile'],
-                                'email' => $contacts['email'],
-                                'relationship' => $contacts['relationship'],
-                                'created_by' => $contacts['created_by'],
+                                'meId' => $ME->meId,
+                                'first_name' => $child['first_name'],
+                                'middle_name' => $child['middle_name'],
+                                'last_name' => $child['last_name'],
+                                'age' => $child['age'],
+                                'created_by' => $child['created_by'],
                                 'created_on' => now()
                             ];
                         }
 
-                        $emergencyContacts = DB::table('tblemergency_contacts')->insert($dataSet);
+                        $meChild = DB::table('tblchildren')->insert($dataSet);
 
                     // END: Emergency Contact Insert Query
 
@@ -251,7 +251,7 @@ class MarriageEncounterController extends Controller
 
                         foreach ($inviters as $inviter) {
                             $inviterDataSet[] = [
-                                'seId' => $SE->seId,
+                                'meId' => $ME->meId,
                                 'name' => $inviter['name'],
                                 'relationship' => $inviter['relationship'],
                                 'created_by' => $inviter['created_by'],
@@ -585,7 +585,7 @@ class MarriageEncounterController extends Controller
 
                     if ($getMe) {
                         if ($request->event_id) {
-                            $SE = MarriageEncounter::where('meId', $getMe->meId)
+                            $ME = MarriageEncounter::where('meId', $getMe->meId)
                             ->update([
                                 'event_id' => $request->event_id,
                             ]);
