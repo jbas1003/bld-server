@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('middle_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('age')->nullable();
+            $table->integer('meId')->nullable();
             $table->integer('created_by');
             $table->string('created_on');
         });
