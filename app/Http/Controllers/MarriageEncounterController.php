@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use App\Models\Emails;
 use App\Models\Members;
 use App\Models\Children;
@@ -14,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\ContactNumbers;
 use App\Models\EmergencyContact;
 use App\Models\MarriageEncounter;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -210,7 +210,7 @@ class MarriageEncounterController extends Controller
 
                     // END: Contact Info Insert Query
 
-                    // START: Singles Encounter Insert Query
+                    // START: Marriage Encounter Insert Query
 
                         $ME = MarriageEncounter::create([
                             'member_id' => $member->member_id,
@@ -221,7 +221,7 @@ class MarriageEncounterController extends Controller
                             'created_on' => now()
                         ]);
 
-                    // END: Singles Encounter Insert Query
+                    // END: Marriage Encounter Insert Query
 
                     // START: Emergency Contact Insert Query
 
@@ -281,6 +281,8 @@ class MarriageEncounterController extends Controller
                 'status' => 500,
                 'message' => 'Server Error: Please contact system adminstrator.'
             ]);
+
+            // throw $th;
         }
     }
 
@@ -306,7 +308,7 @@ class MarriageEncounterController extends Controller
     public function showME (Request $request) {
         $participants = Members::select('tblmembers.member_id', 'tblmarriage_encounter.meId', 'tblmembers.first_name', 'tblmembers.middle_name',
                                         'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender',
-                                        'tblmembers.birthday', 'tblmembers.civil_status', 'tblmembers.religion',
+                                        'tblmembers.birthday', 'tblmembers.civil_status', 'tblmembers.spouse', 'tblmembers.religion',
                                         'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1',
                                         'tbladdresses.address_line2', 'tbladdresses.city', 'tblcontact_numbers.mobile',
                                         'tblemails.email', 'tbloccupations.occupation_name', 'tbloccupations.specialty',
