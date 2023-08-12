@@ -9,8 +9,8 @@ class MarriageEncounter extends Model
 {
     use HasFactory;
 
-    protected $table = 'tblemarriage_encounter';
-    protected $primary = 'meId';
+    protected $table = 'tblmarriage_encounter';
+    protected $primaryKey = 'meId';
     protected $fillable = [
         'member_id',
         'room',
