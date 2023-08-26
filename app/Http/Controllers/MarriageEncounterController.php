@@ -42,54 +42,111 @@ class MarriageEncounterController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                // START: Table Members Data
+                // Start: Husband Data
 
-                    'first_name' => 'nullable|string|max:191',
-                    'middle_name' => 'nullable|string|max:191',
-                    'last_name' => 'nullable|string|max:191',
-                    'nickname' => 'nullable|string|max:191',
-                    'birthday' => 'nullable|string|max:191',
-                    'gender' => 'nullable|string|max:90',
-                    'spouse' => 'nullable|string|max:100',
-                    'civil_status' => 'nullable|string|max:50',
-                    'religion' => 'nullable|string|max:191',
-                    'baptized' => 'nullable|string|max:30',
-                    'confirmed' => 'nullable|string|max:30',
-                    'member_status_id' => 'nullable|integer',
+                    // START: Table Members Data
+
+                        'husband_first_name' => 'nullable|string|max:191',
+                        'husband_middle_name' => 'nullable|string|max:191',
+                        'husband_last_name' => 'nullable|string|max:191',
+                        'husband_nickname' => 'nullable|string|max:191',
+                        'husband_birthday' => 'nullable|string|max:191',
+                        'husband_gender' => 'nullable|string|max:90',
+                        'husband_spouse' => 'nullable|string|max:100',
+                        'husband_civil_status' => 'nullable|string|max:50',
+                        'husband_religion' => 'nullable|string|max:191',
+                        'husband_baptized' => 'nullable|string|max:30',
+                        'husband_confirmed' => 'nullable|string|max:30',
+                        'husband_status_id' => 'nullable|integer',
+                        'created_by' => 'required|integer',
+
+                    // END: Table Members Data
+
+                    // START: Table Address Data
+
+                        'husband_addressLine1' => 'nullable|string|max:255',
+                        'husband_addressLine2' => 'nullable|string|max:255',
+                        'husband_city' => 'nullable|string|max:255',
+
+                    // END: Table Address Data
+
+                    // START: Table ContactNumbers Data
+
+                        'husband_mobile' => 'nullable|string|max:20',
+
+                    // END: Table ContactNumbers Data
+
+                    // START: Table Emails Data
+
+                        'husband_email' => 'nullable|string|max:191',
+
+                    // END: Table Emails Data
+
+                    // Start: Table Occupations Data
+
+                        'husband_occupation' => 'nullable|string|max:191',
+                        'husband_specialty' => 'nullable|string|max:191',
+                        'husband_company' => 'nullable|string|max:191',
+                        'husband_company_addressLine1' => 'nullable|string|max:255',
+                        'husband_company_addressLine2' => 'nullable|string|max:255',
+                        'husband_company_city' => 'nullable|string|max:191',
+
+                    // END: Table Occupations Data
+
+                // END: Husband Data
+
+                // Start: Wife Data
+
+                    // START: Table Members Data
+
+                    'wife_first_name' => 'nullable|string|max:191',
+                    'wife_middle_name' => 'nullable|string|max:191',
+                    'wife_last_name' => 'nullable|string|max:191',
+                    'wife_nickname' => 'nullable|string|max:191',
+                    'wife_birthday' => 'nullable|string|max:191',
+                    'wife_gender' => 'nullable|string|max:90',
+                    'wife_spouse' => 'nullable|string|max:100',
+                    'wife_civil_status' => 'nullable|string|max:50',
+                    'wife_religion' => 'nullable|string|max:191',
+                    'wife_baptized' => 'nullable|string|max:30',
+                    'wife_confirmed' => 'nullable|string|max:30',
+                    'wife_status_id' => 'nullable|integer',
                     'created_by' => 'required|integer',
 
                 // END: Table Members Data
 
                 // START: Table Address Data
 
-                    'member_addressLine1' => 'nullable|string|max:255',
-                    'member_addressLine2' => 'nullable|string|max:255',
-                    'member_city' => 'nullable|string|max:255',
+                    'wife_addressLine1' => 'nullable|string|max:255',
+                    'wife_addressLine2' => 'nullable|string|max:255',
+                    'wife_city' => 'nullable|string|max:255',
 
                 // END: Table Address Data
 
                 // START: Table ContactNumbers Data
 
-                    'member_mobile' => 'nullable|string|max:20',
+                    'wife_mobile' => 'nullable|string|max:20',
 
                 // END: Table ContactNumbers Data
 
                 // START: Table Emails Data
 
-                    'member_email' => 'nullable|string|max:191',
+                    'wife_email' => 'nullable|string|max:191',
 
                 // END: Table Emails Data
 
                 // Start: Table Occupations Data
 
-                    'occupation' => 'nullable|string|max:191',
-                    'specialty' => 'nullable|string|max:191',
-                    'company' => 'nullable|string|max:191',
-                    'company_addressLine1' => 'nullable|string|max:255',
-                    'company_addressLine2' => 'nullable|string|max:255',
-                    'city' => 'nullable|string|max:191',
+                    'wife_occupation' => 'nullable|string|max:191',
+                    'wife_specialty' => 'nullable|string|max:191',
+                    'wife_company' => 'nullable|string|max:191',
+                    'wife_company_addressLine1' => 'nullable|string|max:255',
+                    'wife_company_addressLine2' => 'nullable|string|max:255',
+                    'wife_company_city' => 'nullable|string|max:191',
 
                 // END: Table Occupations Data
+
+            // END: Wife Data
 
                 // START: Table EmergencyContacts Data
 
@@ -117,31 +174,150 @@ class MarriageEncounterController extends Controller
                     'message' => $validator->messages(),
                 ]);
             } else {
-                $memberExist = ContactInfo::join('tblmembers', 'tblcontact_infos.member_id', '=', 'tblmembers.member_id')
+                $husbandExist = ContactInfo::join('tblmembers', 'tblcontact_infos.member_id', '=', 'tblmembers.member_id')
                                           ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
                                           ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
                                           ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
                                           ->first();
 
-                if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
+                if ((($husbandExist->first_name === $request->husband_first_name) && ($husbandExist->middle_name === $request->husband_middle_name) && ($husbandExist->last_name === $request->husband_last_name))) {
                 return response()->json([
                     'status' => 422,
                     'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
                 ], 422);
                 } else {
-                    // START: Members Insert Query
+                    // Start: Husband Insert Queries
 
-                        $member = Members::create([
-                            'first_name' => $request->first_name,
-                            'middle_name' => $request->middle_name,
-                            'last_name' => $request->last_name,
-                            'nickname' => $request->nickname,
-                            'birthday' => $request->birthday,
-                            'gender' => $request->gender,
-                            'civil_status' => $request->civil_status,
-                            'religion' => $request->religion,
-                            'baptism' => $request->baptized,
-                            'confirmation' => $request->confirmed,
+                        // START: Members Insert Query
+
+                            $husband = Members::create([
+                                'first_name' => $request->husband_first_name,
+                                'middle_name' => $request->husband_middle_name,
+                                'last_name' => $request->husband_last_name,
+                                'nickname' => $request->husband_nickname,
+                                'birthday' => $request->husband_birthday,
+                                'gender' => $request->husband_gender,
+                                'civil_status' => $request->husband_civil_status,
+                                'religion' => $request->husband_religion,
+                                'baptism' => $request->baphusband_baptizedtized,
+                                'confirmation' => $request->husband_confirmed,
+                                'member_status_id' => 1,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+
+                        // END: Members Insert Query
+
+                        // START: Address Insert Query
+
+                            $husband_address = Addresses::create([
+                                'address_line1' => $request->husband_addressLine1,
+                                'address_line2' => $request->husband_addressLine2,
+                                'city' => $request->husband_city,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+
+                        // END: Address Insert Query
+
+                        // START: Contact Number Insert Query
+
+                            $husband_contactNumber = ContactNumbers::create([
+                                'mobile' => $request->husband_mobile,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+
+                        // END: Contact Number Insert Query
+
+                        // START: Email Insert Query
+
+                            $husband_email = Emails::create([
+                                'email' => $request->husband_email,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+
+                        // END: Email Insert Query
+
+                        // START: Occupation Insert Query
+
+                            $husband_occupation = Occupation::create([
+                                'occupation_name' => $request->husband_occupation,
+                                'specialty' => $request->husband_specialty,
+                                'company' => $request->husband_company,
+                                'address_line1' => $request->husband_company_addressLine1,
+                                'address_line2' => $request->husband_company_addressLine2,
+                                'city' => $request->husband_company_city,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+
+                        // END: Occupation Insert Query
+
+                        // START: Contact Info Insert Query
+
+                            $husband_contactInfo = ContactInfo::create([
+                                'member_id' => $husband->member_id,
+                                'address_id' => $husband_address->id,
+                                'contactNumber_id' => $husband_contactNumber->id,
+                                'email_id' => $husband_email->id,
+                                'occupation_id' => $husband_occupation->id,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+
+                        // END: Contact Info Insert Query
+
+                        // START: Marriage Encounter Insert Query
+
+                            $husband_ME = MarriageEncounter::create([
+                                'member_id' => $husband->member_id,
+                                'room' => $request->room,
+                                'event_id' => $request->event_id,
+                                'status' => $request->status,
+                                'created_by' => $request->created_by,
+                                'created_on' => now()
+                            ]);
+
+                        // END: Marriage Encounter Insert Query
+
+                        // START: Invite Insert Query
+
+                        $husband_inviterDataSet = [];
+                        $husband_inviters = $request->inviter;
+
+                        foreach ($husband_inviters as $inviter) {
+                            $husband_inviterDataSet[] = [
+                                'meId' => $husband_ME->meId,
+                                'name' => $inviter['name'],
+                                'relationship' => $inviter['relationship'],
+                                'created_by' => $inviter['created_by'],
+                                'created_on' => now()
+                            ];
+                        }
+
+                        $husband_inviterData = DB::table('tblinvites')->insert($husband_inviterDataSet);
+
+                    // END: Invite Insert Query
+
+                    // END: Husband Insert Queries
+
+                    // Start: Wife Insert Queries
+
+                        // START: Members Insert Query
+
+                        $wife = Members::create([
+                            'first_name' => $request->wife_first_name,
+                            'middle_name' => $request->wife_middle_name,
+                            'last_name' => $request->wife_last_name,
+                            'nickname' => $request->wife_nickname,
+                            'birthday' => $request->wife_birthday,
+                            'gender' => $request->wife_gender,
+                            'civil_status' => $request->wife_civil_status,
+                            'religion' => $request->wife_religion,
+                            'baptism' => $request->bapwife_baptizedtized,
+                            'confirmation' => $request->wife_confirmed,
                             'member_status_id' => 1,
                             'created_by' => $request->created_by,
                             'created_on' => now()
@@ -151,10 +327,10 @@ class MarriageEncounterController extends Controller
 
                     // START: Address Insert Query
 
-                        $address = Addresses::create([
-                            'address_line1' => $request->member_addressLine1,
-                            'address_line2' => $request->member_addressLine2,
-                            'city' => $request->member_city,
+                        $wife_address = Addresses::create([
+                            'address_line1' => $request->wife_addressLine1,
+                            'address_line2' => $request->wife_addressLine2,
+                            'city' => $request->wife_city,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -163,8 +339,8 @@ class MarriageEncounterController extends Controller
 
                     // START: Contact Number Insert Query
 
-                        $contactNumber = ContactNumbers::create([
-                            'mobile' => $request->member_mobile,
+                        $wife_contactNumber = ContactNumbers::create([
+                            'mobile' => $request->wife_mobile,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -173,8 +349,8 @@ class MarriageEncounterController extends Controller
 
                     // START: Email Insert Query
 
-                        $email = Emails::create([
-                            'email' => $request->member_email,
+                        $wife_email = Emails::create([
+                            'email' => $request->wife_email,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -183,13 +359,13 @@ class MarriageEncounterController extends Controller
 
                     // START: Occupation Insert Query
 
-                        $occupation = Occupation::create([
-                            'occupation_name' => $request->occupation,
-                            'specialty' => $request->specialty,
-                            'company' => $request->company,
-                            'address_line1' => $request->company_addressLine1,
-                            'address_line2' => $request->company_addressLine2,
-                            'city' => $request->company_city,
+                        $wife_occupation = Occupation::create([
+                            'occupation_name' => $request->wife_occupation,
+                            'specialty' => $request->wife_specialty,
+                            'company' => $request->wife_company,
+                            'address_line1' => $request->wife_company_addressLine1,
+                            'address_line2' => $request->wife_company_addressLine2,
+                            'city' => $request->wife_company_city,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -198,12 +374,12 @@ class MarriageEncounterController extends Controller
 
                     // START: Contact Info Insert Query
 
-                        $contactInfo = ContactInfo::create([
-                            'member_id' => $member->member_id,
-                            'address_id' => $address->id,
-                            'contactNumber_id' => $contactNumber->id,
-                            'email_id' => $email->id,
-                            'occupation_id' => $occupation->id,
+                        $wife_contactInfo = ContactInfo::create([
+                            'member_id' => $wife->member_id,
+                            'address_id' => $wife_address->id,
+                            'contactNumber_id' => $wife_contactNumber->id,
+                            'email_id' => $wife_email->id,
+                            'occupation_id' => $wife_occupation->id,
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
@@ -212,8 +388,8 @@ class MarriageEncounterController extends Controller
 
                     // START: Marriage Encounter Insert Query
 
-                        $ME = MarriageEncounter::create([
-                            'member_id' => $member->member_id,
+                        $wife_ME = MarriageEncounter::create([
+                            'member_id' => $wife->member_id,
                             'room' => $request->room,
                             'event_id' => $request->event_id,
                             'status' => $request->status,
@@ -223,35 +399,14 @@ class MarriageEncounterController extends Controller
 
                     // END: Marriage Encounter Insert Query
 
-                    // START: Emergency Contact Insert Query
+                    // START: Invite Insert Query
 
-                        $dataSet = [];
-                        $children = $request->children;
+                        $wife_inviterDataSet = [];
+                        $wife_inviters = $request->inviter;
 
-                        foreach ($children as $child) {
-                            $dataSet[] = [
-                                'meId' => $ME->meId,
-                                'first_name' => $child['first_name'],
-                                'middle_name' => $child['middle_name'],
-                                'last_name' => $child['last_name'],
-                                'age' => $child['age'],
-                                'created_by' => $child['created_by'],
-                                'created_on' => now()
-                            ];
-                        }
-
-                        $meChild = DB::table('tblchildren')->insert($dataSet);
-
-                    // END: Emergency Contact Insert Query
-
-                    // START: Imvite Insert Query
-
-                        $inviterDataSet = [];
-                        $inviters = $request->inviter;
-
-                        foreach ($inviters as $inviter) {
-                            $inviterDataSet[] = [
-                                'meId' => $ME->meId,
+                        foreach ($wife_inviters as $inviter) {
+                            $wife_inviterDataSet[] = [
+                                'meId' => $wife_ME->meId,
                                 'name' => $inviter['name'],
                                 'relationship' => $inviter['relationship'],
                                 'created_by' => $inviter['created_by'],
@@ -259,11 +414,48 @@ class MarriageEncounterController extends Controller
                             ];
                         }
 
-                        $inviterData = DB::table('tblinvites')->insert($inviterDataSet);
+                        $wife_inviterData = DB::table('tblinvites')->insert($wife_inviterDataSet);
 
                     // END: Invite Insert Query
 
-                    if ($contactInfo->count() > 0 & $inviterData === true) {
+                // END: Wife Insert Queries
+
+                    // START: Child Insert Query
+
+                        $dataSet = [];
+                        $children = $request->children;
+
+                        // foreach ($children as $child) {
+                        //     $dataSet[] = [
+                        //         'meId' => $ME->meId,
+                        //         'first_name' => $child['first_name'],
+                        //         'middle_name' => $child['middle_name'],
+                        //         'last_name' => $child['last_name'],
+                        //         'age' => $child['age'],
+                        //         'created_by' => $child['created_by'],
+                        //         'created_on' => now()
+                        //     ];
+                        // }
+
+                        // $meChild = DB::table('tblchildren')->insert($dataSet);
+
+                        foreach ($children as $child) {
+                            $dataSet[] = [
+                                'first_name' => $child['first_name'],
+                                'middle_name' => $child['middle_name'],
+                                'last_name' => $child['last_name'],
+                                'birthday' => $child['birthday'],
+                                'created_by' => $child['created_by'],
+                                'created_on' => now()
+                            ];
+                        }
+
+                        $meChild = DB::table('tblmembers')->insert($dataSet);
+
+                    // END: Child Insert Query
+
+
+                    if (($husband_contactInfo->count() > 0 & $husband_inviterData === true) && ($husband_contactInfo->count() > 0 & $husband_inviterData === true)) {
                         return response()->json([
                             'status' => 200,
                             'message' => 'Adding participant was successful!'
@@ -277,12 +469,12 @@ class MarriageEncounterController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Server Error: Please contact system adminstrator.'
-            ]);
+            // return response()->json([
+            //     'status' => 500,
+            //     'message' => 'Server Error: Please contact system adminstrator.'
+            // ]);
 
-            // throw $th;
+            throw $th;
         }
     }
 
