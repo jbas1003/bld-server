@@ -14,6 +14,7 @@ use App\Models\ContactNumbers;
 use App\Models\EmergencyContact;
 use App\Models\MarriageEncounter;
 use Illuminate\Support\Facades\DB;
+use App\Models\MemberRelationships;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -420,61 +421,73 @@ class MarriageEncounterController extends Controller
 
                 // END: Wife Insert Queries
 
-                    // START: Child Insert Query
+                // START: Husband-Wife Relationship
 
-                        $dataSet = [];
-                        $children = $request->children;
+                        $husband_wife = [
+                            'member_id' => $husband->member_id,
+                            'relative_id' => $wife->member_id,
+                            'relationship_id' => 2,
+                            'created_by' => $request->created_by
+                        ];
 
-                        // foreach ($children as $child) {
-                        //     $dataSet[] = [
-                        //         'meId' => $ME->meId,
-                        //         'first_name' => $child['first_name'],
-                        //         'middle_name' => $child['middle_name'],
-                        //         'last_name' => $child['last_name'],
-                        //         'age' => $child['age'],
-                        //         'created_by' => $child['created_by'],
-                        //         'created_on' => now()
-                        //     ];
-                        // }
+                        $husbandWife = DB::table('tblmember_relationships')->insert($husband_wife);
 
-                        // $meChild = DB::table('tblchildren')->insert($dataSet);
+                        $wife_husband = [
+                            'member_id' => $wife->member_id,
+                            'relative_id' => $husband->member_id,
+                            'relationship_id' => 1,
+                            'created_by' => $request->created_by
+                        ];
 
-                        foreach ($children as $child) {
-                            $dataSet[] = [
-                                'first_name' => $child['first_name'],
-                                'middle_name' => $child['middle_name'],
-                                'last_name' => $child['last_name'],
-                                'birthday' => $child['birthday'],
-                                'created_by' => $child['created_by'],
-                                'created_on' => now()
-                            ];
-                        }
+                        $wifeHusband = DB::table('tblmember_relationships')->insert($wife_husband);
 
-                        $meChild = DB::table('tblmembers')->insert($dataSet);
+                // END: Husband-Wife Relationship
 
-                    // END: Child Insert Query
+                // START: Child Insert Query
+                    $husband_dataSet = [];
+                    $wife_dataSet = [];
+                    $dataSet = [];
+                    $children = $request->children;
 
+                    $idSet = [];
 
-                    if (($husband_contactInfo->count() > 0 & $husband_inviterData === true) && ($husband_contactInfo->count() > 0 & $husband_inviterData === true)) {
-                        return response()->json([
-                            'status' => 200,
-                            'message' => 'Adding participant was successful!'
+                    foreach ($children as $child) {
+                        $dataSet['member_id'] = DB::table('tblmembers')->insertGetId([
+                            'first_name' => $child['first_name'],
+                            'middle_name' => $child['middle_name'],
+                            'last_name' => $child['last_name'],
+                            'birthday' => $child['birthday'],
+                            'created_by' => $child['created_by'],
+                            'created_on' => now()
                         ]);
-                    } else {
-                        return response()->json([
-                            'status' => 500,
-                            'message' => 'A problem was encountered while adding participant records. Please acontact system administrators.'
-                        ]);
+
+                        $idSet[] = $dataSet;
+                    }
+
+                    foreach ($idSet as $id) {
+                        $husband_dataSet = [
+                            'member_id' => $husband->member_id,
+                            'relative_id' => $id['member_id'],
+                            'relationship_id' => 5,
+                            'created_by' => $request->created_by
+                        ];
+                        $husband_children = DB::table('tblmember_relationships')->insert($husband_dataSet);
+
+                        $wife_dataSet = [
+                            'member_id' => $wife->member_id,
+                            'relative_id' => $id['member_id'],
+                            'relationship_id' => 5,
+                            'created_by' => $request->created_by
+                        ];
+                        $wife_children = DB::table('tblmember_relationships')->insert($wife_dataSet);
                     }
                 }
             }
         } catch (\Throwable $th) {
-            // return response()->json([
-            //     'status' => 500,
-            //     'message' => 'Server Error: Please contact system adminstrator.'
-            // ]);
-
-            throw $th;
+            return response()->json([
+                'status' => 500,
+                'message' => 'Server Error: Please contact system adminstrator.'
+            ]);
         }
     }
 
