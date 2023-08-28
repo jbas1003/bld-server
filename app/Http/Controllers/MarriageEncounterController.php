@@ -526,13 +526,9 @@ class MarriageEncounterController extends Controller
                             ->leftJoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
                             ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                             ->leftJoin('tblmarriage_encounter', 'tblmembers.member_id', '=', 'tblmarriage_encounter.member_id')
-                            ->where('tblmembers.civil_status', 'LIKE', '%marriage')
-                            ->with(['MeChildren' => function ($query) {
-                                $query->select('tblchildren.child_id',
-                                    'tblchildren.first_name',
-                                    'tblchildren.middle_name',
-                                    'tblchildren.last_name',
-                                    'tblchildren.age');
+                            ->where('tblmembers.civil_status', 'LIKE', '%Married')
+                            ->with(['Relationships' => function ($query) {
+                                $query->select('tblmember_relationships.relative_id', 'tblmember_relationships.relationship_id');
                             }])
                             ->with(['MeInviters' => function ($query) {
                                 $query->select('tblinvites.invite_id',
