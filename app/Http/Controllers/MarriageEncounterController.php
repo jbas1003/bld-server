@@ -528,7 +528,9 @@ class MarriageEncounterController extends Controller
                             ->leftJoin('tblmarriage_encounter', 'tblmembers.member_id', '=', 'tblmarriage_encounter.member_id')
                             ->where('tblmembers.civil_status', 'LIKE', '%Married')
                             ->with(['Relationships' => function ($query) {
-                                $query->select('tblmember_relationships.relative_id', 'tblmember_relationships.relationship_id');
+                                $query->select('tblmember_relationships.relative_id', 'relatives.first_name', 'relatives.middle_name', 'relatives.last_name', 'tblrelationships.relationship')
+                                      ->join('tblrelationships', 'tblmember_relationships.relationship_id', '=', 'tblrelationships.relationship_id')
+                                      ->join('tblmembers AS relatives', 'tblmember_relationships.relative_id', '=', 'relatives.member_id');
                             }])
                             ->with(['MeInviters' => function ($query) {
                                 $query->select('tblinvites.invite_id',
