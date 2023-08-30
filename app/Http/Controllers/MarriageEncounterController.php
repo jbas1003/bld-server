@@ -451,11 +451,25 @@ class MarriageEncounterController extends Controller
 
                     $idSet = [];
 
+                    $addressData_Set = [];
+                    $address_data = [];
+
+                    $mobile_dataSet = [];
+                    $mobile_data = [];
+
+                    $email_dataSet = [];
+                    $email_data = [];
+
+                    $occupations_dataSet = [];
+                    $occupations_data = [];
+
+                    $contact_info_dataSet = [];
+
                     foreach ($children as $child) {
                         $dataSet['member_id'] = DB::table('tblmembers')->insertGetId([
-                            'first_name' => $child['first_name'],
-                            'middle_name' => $child['middle_name'],
-                            'last_name' => $child['last_name'],
+                            'first_name' => $child['firstName'],
+                            'middle_name' => $child['middleName'],
+                            'last_name' => $child['lastName'],
                             'birthday' => $child['birthday'],
                             'created_by' => $child['created_by'],
                             'created_on' => now()
@@ -465,6 +479,57 @@ class MarriageEncounterController extends Controller
                     }
 
                     foreach ($idSet as $id) {
+
+
+                        $addressData_Set['address_id'] = DB::table('tbladdresses')->insertGetId([
+                            'address_line1' => null,
+                            'address_line2' => null,
+                            'city' => null,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                        // $address_data[] = $addressData_Set;
+
+                        $mobile_dataSet['contactNumber_id'] = DB::table('tblcontact_numbers')->insertGetId([
+                            'mobile' => null,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                        // $mobile_data[] = $mobile_dataSet;
+
+                        $email_dataSet['email_id'] = DB::table('tblemails')->insertGetId([
+                            'email' => null,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+
+                        // $email_data[] = $email_dataSet;
+
+                        $occupations_dataSet['occupation_id'] = DB::table('tbloccupations')->insertGetId([
+                            'occupation_name' => null,
+                            'specialty' => null,
+                            'company' => null,
+                            'address_line1' => null,
+                            'address_line2' => null,
+                            'city' => null,
+                            'created_by' => $request->created_by,
+                            'created_on' => now(),
+                        ]);
+
+                        // $occupations_data[] = $occupations_dataSet;
+
+                        $contact_info_dataSet = ContactInfo::create([
+                            'member_id' => $id['member_id'],
+                            'address_id' => $addressData_Set['address_id'],
+                            'contactNumber_id' => $mobile_dataSet['contactNumber_id'],
+                            'email_id' => $email_dataSet['email_id'],
+                            'occupation_id' => $occupations_dataSet['occupation_id'],
+                            'created_by' => $request->created_by,
+                            'created_on' => now(),
+                        ]);
+
                         $husband_dataSet = [
                             'member_id' => $husband->member_id,
                             'relative_id' => $id['member_id'],
@@ -484,10 +549,12 @@ class MarriageEncounterController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Server Error: Please contact system adminstrator.'
-            ]);
+            // return response()->json([
+            //     'status' => 500,
+            //     'message' => 'Server Error: Please contact system adminstrator.'
+            // ]);
+
+            return $th;
         }
     }
 
@@ -527,6 +594,7 @@ class MarriageEncounterController extends Controller
                             ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                             ->leftJoin('tblmarriage_encounter', 'tblmembers.member_id', '=', 'tblmarriage_encounter.member_id')
                             ->where('tblmembers.civil_status', 'LIKE', '%Married')
+                            ->orWhere('tblmembers.civil_status', null)
                             ->with(['Relationships' => function ($query) {
                                 $query->select('tblmember_relationships.relative_id', 'relatives.first_name', 'relatives.middle_name', 'relatives.last_name', 'tblrelationships.relationship')
                                       ->join('tblrelationships', 'tblmember_relationships.relationship_id', '=', 'tblrelationships.relationship_id')
