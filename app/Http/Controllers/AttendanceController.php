@@ -58,7 +58,7 @@ class AttendanceController extends Controller
                         'message' => 'This person already has an attendance record for this event.'
                     ]);
                 } else {
-                    
+
                     $attendance = Attendance::create([
                         'member_id' => $request->member_id,
                         'event_id' => $request->event_id,
@@ -98,11 +98,11 @@ class AttendanceController extends Controller
             $eventCategory = EventType::where('event_type_name', $request->event_category)
                 ->select('event_type_id')
                 ->first();
-                    
+
             $eventType = EventType::where('event_type_category', $eventCategory->event_type_id)
                 ->select('event_type_id')
                 ->first();
-            
+
             $attendance = Attendance::join('tblmembers', 'tblattendances.member_id', '=', 'tblmembers.member_id')
                                     ->join('tblevents', 'tblattendances.event_id', '=', 'tblevents.event_id')
                                     ->where('tblevents.event_type_id', $eventType->event_type_id)
@@ -134,25 +134,25 @@ class AttendanceController extends Controller
     }
 
     public function showAttendance(Attendance $attendance, Request $request) {
-        try {                 
+        try {
             $eventId = $request->event_id;
-            $getAttendance = Members::join('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
-                                    ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
-                                    ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
-                                    ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
-                                    ->join('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
+            $getAttendance = Members::leftjoin('tblcontact_infos', 'tblmembers.member_id', '=', 'tblcontact_infos.member_id')
+                                    ->leftjoin('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                    ->leftjoin('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                    ->leftjoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                    ->leftjoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                                     ->leftjoin('tblattendances', function($join) use ($eventId) {
                                         $join->on('tblmembers.member_id', '=', 'tblattendances.member_id')
                                         ->where('tblattendances.event_id', '=', $eventId);
                                     })
                                     ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.nickname',
-                                    'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status', 'tblmembers.spouse_member_id',
+                                    'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status',
                                     'tblmembers.religion', 'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city',
                                      'tbloccupations.occupation_name', 'tbloccupations.specialty', 'tbloccupations.company', 'tbloccupations.address_line1 As work_address_line1',
                                     'tbloccupations.address_line2 As work_address_line2', 'tbloccupations.city As work_city',
                                     DB::raw('IFNULL(tblattendances.status, "") As status'), DB::raw('IFNULL(tblattendances.attendance_id, "") As attendance_id'))
                                     ->get();
-            
+
             if ($getAttendance->count() > 0) {
                 return response()->json([
                     'status' => 200,
@@ -192,7 +192,7 @@ class AttendanceController extends Controller
     {
         try {
             $attendance = Attendance::find($request->attendance_id);
-                
+
             if ($attendance) {
                 $attendance->delete();
                 return response()->json([
