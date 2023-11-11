@@ -7,9 +7,10 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\Member As Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Foundation\Auth\Members As Authenticatable;
 
-class Members extends Authenticatable
+class Members extends Model
 {
     use HasFactory, HasApiTokens, Notifiable;
 
