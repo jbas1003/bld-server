@@ -98,29 +98,23 @@ class EventsController extends Controller
     public function getEvents(Events $events, Request $request) {
         try {
             if ($events->count() > 0) {
-                
+
                 if ($request->all()) {
-                    
+
                     $eventCategory = EventType::where('event_type_name', $request->event_category)
                                 ->select('event_type_id')
                                 ->first();
-                    
-                    $eventType = EventType::where('event_type_category', $eventCategory->event_type_id)
-                    ->select('event_type_id')
-                    ->first();
 
-                    $events = Events::where('event_type_id', $eventType->event_type_id)
-                                    ->when(($request->event_id !== null & $request->event_id !== ""), function($events) use ($request){
-                                        $events->where('event_id', $request->event_id);
-                                    })
-                                ->select('event_type_id', 'start_date', 'status', 'event_id')
-                                ->get();
-                    
+                    $eventType = EventType::where('event_type_category', $eventCategory->event_type_id)
+                    ->leftJoin('tblevents', 'tblevent_types.event_type_id', 'tblevents.event_type_id')
+                    ->select('*')
+                    ->get();
+
                     if ($events->count() > 0) {
                         return response()->json([
                             'status' => 200,
                             'message' => 'Success!',
-                            'body' => $events
+                            'body' => $eventType
                         ], 200);
                     } else {
                         return response()->json([
@@ -134,7 +128,7 @@ class EventsController extends Controller
                                             'tblevents.location', 'tblevents.start_date', 'tblevents.end_date',
                                             'tblevents.status', 'tblevents.event_type_id', 'tblevent_types.event_type_name', 'tblevent_types.event_type_category')
                                     ->get();
-                
+
                     return response()->json([
                         'status' => 200,
                         'body' => $newEvents
