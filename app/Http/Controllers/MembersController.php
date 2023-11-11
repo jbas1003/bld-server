@@ -38,8 +38,8 @@ class MembersController extends Controller
      */
     public function store(Request $request)
     {
-        //START: Add Members 
-        
+        //START: Add Members
+
         try {
             $validator = Validator::make($request->all(), [
                 // START: Table Members Data
@@ -111,7 +111,7 @@ class MembersController extends Controller
                             'message' => 'Please check name, email, or mobile number. One of these info might already exist, or might have not existed.'
                         ], 422);
                     } else {
-                        
+
                         $member = Members::create([
                             'first_name' => $request->first_name,
                             'middle_name' => $request->middle_name,
@@ -128,7 +128,7 @@ class MembersController extends Controller
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
-        
+
                         $address = Addresses::create([
                             'address_line1' => $request->member_address_line1,
                             'address_line2' => $request->member_address_line2,
@@ -184,7 +184,7 @@ class MembersController extends Controller
                     }
                 } else {
                     $getEvent = Events::where('event_name', $request->event_name)->first();
-                        
+
                     $member = Members::create([
                         'first_name' => $request->first_name,
                         'middle_name' => $request->middle_name,
@@ -272,16 +272,16 @@ class MembersController extends Controller
 
         try {
             $getAllMembers = ContactInfo::join('tblmembers', 'tblcontact_infos.member_id', '=', 'tblmembers.member_id')
-                                ->join('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
-                                ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
-                                ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
-                                ->join('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
+                                ->leftJoin('tbladdresses', 'tblcontact_infos.address_id', '=', 'tbladdresses.address_id')
+                                ->leftJoin('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
+                                ->leftJoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
+                                ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                                 ->select('tblmembers.member_id', 'tblmembers.first_name', 'tblmembers.middle_name', 'tblmembers.last_name', 'tblmembers.nickname',
                                 'tblcontact_numbers.mobile', 'tblemails.email', 'tblmembers.birthday', 'tblmembers.gender', 'tblmembers.civil_status',
                                 'tblmembers.religion', 'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1', 'tbladdresses.address_line2', 'tbladdresses.city')
                                 ->get();
-              
-            
+
+
             if ($getAllMembers->count() > 0) {
                 return response()->json([
                     'status' => 200,
@@ -295,7 +295,7 @@ class MembersController extends Controller
             }
 
             return $getAllMembers;
-            
+
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -377,7 +377,7 @@ class MembersController extends Controller
 
                 if ($memberExist) {
                     $getMember = ContactInfo::where('member_id', $request->member_id)->first();
-                    
+
                     $member = Members::where('member_id', $getMember->member_id)
                             ->update([
                                 'first_name' => $request->first_name,
@@ -395,7 +395,7 @@ class MembersController extends Controller
                                 // 'updated_by' => $request->updated_by,
                                 // 'updated_on' => now()
                             ]);
-    
+
                     $address = Addresses::where('address_id', $getMember->address_id)
                             ->update([
                                 'address_line1' => $request->member_address_line1,
