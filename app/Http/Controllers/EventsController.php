@@ -35,6 +35,7 @@ class EventsController extends Controller
             $validator = Validator::make($request->all(), [
                 'event_name' => 'required|string|max:200',
                 'event_subtitle' => 'nullable|string|max:200',
+                'event_details' => 'nullable|string',
                 'location' => 'nullable|string|max:300',
                 'start_date' => 'nullable|string|max:200',
                 'end_date' => 'nullable|string|max:200',
@@ -60,6 +61,7 @@ class EventsController extends Controller
                     $event = Events::create([
                         'event_name' => $request->event_name,
                         'event_subtitle' => $request->event_subtitle,
+                        'event_details' => $request->event_details,
                         'location' => $request->location,
                         'start_date' => $request->start_date,
                         'end_date' => $request->end_date,
@@ -98,21 +100,22 @@ class EventsController extends Controller
     public function getEvents(Events $events, Request $request) {
         try {
             if ($events->count() > 0) {
-                
+
                 if ($request->all()) {
-                    
+
                     $eventCategory = EventType::where('event_type_name', $request->event_category)
                                 ->select('event_type_id')
                                 ->first();
-                    
+
                     $eventType = EventType::where('event_type_category', $eventCategory->event_type_id)
                     ->select('event_type_id')
                     ->first();
 
                     $events = Events::where('event_type_id', $eventType->event_type_id)
-                                ->select('event_type_id', 'start_date', 'status', 'event_id')
+                                ->select('event_type_id', 'start_date', 'status', 'event_id', 'created_on')
+                                ->latest('created_on')
                                 ->get();
-                    
+
                     if ($events->count() > 0) {
                         return response()->json([
                             'status' => 200,
@@ -127,11 +130,12 @@ class EventsController extends Controller
                     }
                 } else {
                     $newEvents = Events::join('tblevent_types', 'tblevent_types.event_type_id', '=', 'tblevents.event_type_id')
-                                    ->select('tblevents.event_id', 'tblevents.event_name', 'tblevents.event_subtitle',
+                                    ->select('tblevents.event_id', 'tblevents.event_name', 'tblevents.event_subtitle', 'tblevents.event_details',
                                             'tblevents.location', 'tblevents.start_date', 'tblevents.end_date',
-                                            'tblevents.status', 'tblevents.event_type_id', 'tblevent_types.event_type_name', 'tblevent_types.event_type_category')
+                                            'tblevents.status', 'tblevents.event_type_id', 'tblevent_types.event_type_name', 'tblevent_types.event_type_category', 'tblevents.created_on')
+                                    ->latest('created_on')
                                     ->get();
-                
+
                     return response()->json([
                         'status' => 200,
                         'body' => $newEvents
@@ -165,6 +169,7 @@ class EventsController extends Controller
             $validator = Validator::make($request->all(), [
                 'event_name' => 'required|string:max:200',
                 'event_subtitle' => 'nullable|string|max:200',
+                'event_details' => 'nullable|string',
                 'location' => 'nullable|string|max:300',
                 'start_date' => 'nullable|string|max:200',
                 'end_date' => 'nullable|string|max:200',
@@ -180,7 +185,7 @@ class EventsController extends Controller
             } else {
                 $event = Events::find($request->event_id);
 
-                if ($event->event_name === $request->event_name & $event->event_subtitle === $request->event_subtitle & $event->start_date === $request->start_date & $event->end_date === $request->end_date & $event->status === $request->status & $event->event_type_id) {
+                if ($event->event_name === $request->event_name & $event->event_subtitle === $request->event_subtitle & $event->event_details === $request->event_details & $event->start_date === $request->start_date & $event->end_date === $request->end_date & $event->status === $request->status & $event->event_type_id) {
                     return response()->json([
                         'status' => 422,
                         'errors' => 'No changes were made.'
@@ -190,6 +195,7 @@ class EventsController extends Controller
                             ->update([
                                 'event_name' => $request->event_name,
                                 'event_subtitle' => $request->event_subtitle,
+                                'event_details' => $request->event_details,
                                 'location' => $request->location,
                                 'start_date' => $request->start_date,
                                 'end_date' => $request->end_date,
