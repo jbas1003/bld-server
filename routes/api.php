@@ -14,6 +14,7 @@ use App\Http\Controllers\ContactNumbersController;
 use App\Http\Controllers\MemberAccountsController;
 use App\Http\Controllers\YouthEncounterController;
 use App\Http\Controllers\SinglesEncounterController;
+use App\Http\Controllers\MarriageEncounterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -133,3 +134,12 @@ use App\Http\Controllers\SinglesEncounterController;
     Route::post('yeAttendance', [YouthEncounterController::class, 'createAttendance']);
 
 // END: Youth Encounter Routes
+
+// START: Marriage Encounter Routes
+
+    Route::post('show_ME', [MarriageEncounterController::class, 'showME']);
+    Route::post('ME', [MarriageEncounterController::class, 'store']);
+    Route::post('meAttendance', [MarriageEncounter::class, 'createAttendance']);
+    Route::put('update_ME', [MarriageEncounter::class, 'update']);
+
+// END: Marraige Encounter Routes
