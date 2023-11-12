@@ -180,7 +180,7 @@ class MemberAccountsController extends Controller
                 $account = MemberAccounts::find($request->memberAccount_id);
 
                 if ($account->username === $request->username) {
-                    return responsse()->json([
+                    return response()->json([
                         'status' => 422,
                         'message' => 'No changes were made.'
                     ], 422);

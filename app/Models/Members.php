@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Members;
 use App\Models\ContactInfo;
 use App\Models\YouthEncounter;
 use App\Models\EmergencyContact;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\Member As Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Members extends Model
