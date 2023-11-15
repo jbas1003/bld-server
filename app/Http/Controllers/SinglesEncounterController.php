@@ -397,6 +397,18 @@ class SinglesEncounterController extends Controller
                                     'event_id' => $request->event_id,
                                     'status' => $request->status
                                 ]);
+
+                        if ($seAttendance) {
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Attendance updated successfully!'
+                            ]);
+                        } else{
+                            return response()->json([
+                                'status' => 422,
+                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
+                            ]);
+                        }
                     } else {
                         $SE = SinglesEncounter::create([
                             'member_id' => $request->member_id,
@@ -407,6 +419,18 @@ class SinglesEncounterController extends Controller
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
+
+                        if ($SE) {
+                            return response()->json([
+                                'status' => 200,
+                                'message' => 'Attendance updated successfully!'
+                            ]);
+                        } else{
+                            return response()->json([
+                                'status' => 422,
+                                'message' => 'An error occured while updating the attendance. Please contact system administrator.'
+                            ]);
+                        }
                     }
 
 
