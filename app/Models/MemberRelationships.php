@@ -5,19 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MarriageEncounter extends Model
+class MemberRelationships extends Model
 {
     use HasFactory;
 
-    protected $table = 'tblmarriage_encounter';
-    protected $primaryKey = 'meId';
+    protected $table = 'tblmember_relationships';
+    protected $primaryKey = 'member_relationship_id';
     protected $fillable = [
         'member_id',
-        'room',
-        'event_id',
-        'status',
-        'created_by',
-        'created_on'
+        'relative_id',
+        'relationship_id',
+        'created_by'
     ];
 
     public $timestamps = false;

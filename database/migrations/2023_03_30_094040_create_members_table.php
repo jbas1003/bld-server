@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('birthday')->nullable();
             $table->string('gender')->nullable();
             $table->string('civil_status')->nullable();
-            $table->integer('spouse_member_id')->nullable();
+            $table->integer('spouse')->nullable();
             $table->string('religion')->nullable();
             $table->string('baptism')->nullable();
             $table->string('confirmation')->nullable();
@@ -28,7 +28,13 @@ return new class extends Migration
             $table->integer('created_by');
             $table->string('created_on');
         });
+
+        // Schema::table('tblmembers', function (Blueprint $table) {
+        //     $table->renameColumn('spouse_member_id', 'spouse');
+        // });
     }
+
+
 
     /**
      * Reverse the migrations.
@@ -37,4 +43,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('tblmembers');
     }
+
 };

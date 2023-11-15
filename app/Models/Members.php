@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Members;
 use App\Models\ContactInfo;
 use App\Models\YouthEncounter;
 use App\Models\EmergencyContact;
 use App\Models\SinglesEncounter;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\MemberRelationships;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\Member As Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Members extends Model
@@ -29,7 +28,7 @@ class Members extends Model
         'birthday',
         'gender',
         'civil_status',
-        'spouse_member_id',
+        'spouse',
         'religion',
         'baptism',
         'confirmation',
@@ -58,5 +57,15 @@ class Members extends Model
     public function YeInviters(): HasManyThrough
     {
         return $this->hasManyThrough(Invite::class, YouthEncounter::class, 'member_id', 'yeId');
+    }
+
+    public function MEInviters(): HasManyThrough
+    {
+        return $this->hasManyThrough(Invite::class, MarriageEncounter::class, 'member_id', 'meId');
+    }
+
+    public function Relationships(): HasManyThrough
+    {
+        return $this->hasManyThrough(MemberRelationships::class, Members::class, 'member_id', 'member_id');
     }
 }
