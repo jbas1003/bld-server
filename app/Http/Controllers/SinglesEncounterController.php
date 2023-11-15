@@ -100,7 +100,7 @@ class SinglesEncounterController extends Controller
                 // START: Table Invite Data
 
                     'inviter' => 'nullable|array',
-        
+
                 // END: Table Invite Data
 
                 // START: Table Singles Encounter Data
@@ -124,7 +124,7 @@ class SinglesEncounterController extends Controller
                                           ->join('tblcontact_numbers', 'tblcontact_infos.contactNumber_id', '=', 'tblcontact_numbers.contactNumber_id')
                                           ->join('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
                                           ->first();
-                                          
+
                 if ((($memberExist->first_name === $request->first_name) && ($memberExist->middle_name === $request->middle_name) && ($memberExist->last_name === $request->last_name)) || ($memberExist->email === $request->email) || ($memberExist->mobile === $request->mobile)) {
                 return response()->json([
                     'status' => 422,
@@ -230,7 +230,7 @@ class SinglesEncounterController extends Controller
 
                         $dataSet = [];
                         $emergency_contacts = $request->emergency_contacts;
-                        
+
                         foreach ($emergency_contacts as $contacts) {
                             $dataSet[] = [
                                 'seId' => $SE->seId,
@@ -265,7 +265,7 @@ class SinglesEncounterController extends Controller
                         $inviterData = DB::table('tblinvites')->insert($inviterDataSet);
 
                     // END: Invite Insert Query
-                    
+
                     if ($contactInfo->count() > 0 & $inviterData === true) {
                         return response()->json([
                             'status' => 200,
@@ -307,7 +307,7 @@ class SinglesEncounterController extends Controller
     }
 
     public function showSE (Request $request) {
-        $participants = Members::select('tblmembers.member_id', 'tblsingles_encounter.seId', 'tblmembers.first_name', 'tblmembers.middle_name',
+        $participants = Members::select('tblmembers.member_id', 'tblsingles_encounter.seId', 'tblevents.event_id', 'tblevents.event_subtitle As event', 'tblmembers.first_name', 'tblmembers.middle_name',
                                         'tblmembers.last_name', 'tblmembers.nickname', 'tblmembers.gender',
                                         'tblmembers.birthday', 'tblmembers.civil_status', 'tblmembers.religion',
                                         'tblmembers.baptism', 'tblmembers.confirmation', 'tbladdresses.address_line1',
@@ -322,6 +322,7 @@ class SinglesEncounterController extends Controller
                             ->leftJoin('tblemails', 'tblcontact_infos.email_id', '=', 'tblemails.email_id')
                             ->leftJoin('tbloccupations', 'tblcontact_infos.occupation_id', '=', 'tbloccupations.occupation_id')
                             ->leftJoin('tblsingles_encounter', 'tblmembers.member_id', '=', 'tblsingles_encounter.member_id')
+                            ->leftJoin('tblevents', 'tblsingles_encounter.event_id', '=', 'tblevents.event_id')
                             ->where('tblmembers.civil_status', 'LIKE', '%single')
                             ->with(['SeEmergencyContacts' => function ($query) {
                                 $query->select('tblemergency_contacts.emergencyContact_id',
@@ -393,7 +394,7 @@ class SinglesEncounterController extends Controller
                                     'event_id' => $request->event_id,
                                     'status' => $request->status
                                 ]);
-                    
+
                     $existingAttendance = Attendance::where('member_id', '=', $request->member_id)->first();
 
                     if ($existingAttendance) {
@@ -513,7 +514,7 @@ class SinglesEncounterController extends Controller
                 // START: Table Invite Data
 
                     'inviters' => 'nullable|array',
-        
+
                 // END: Table Invite Data
 
                 // START: Table Singles Encounter Data
@@ -532,7 +533,7 @@ class SinglesEncounterController extends Controller
             } else {
                 // START: Members Update Query
                     $getMember = ContactInfo::where('member_id', $request->member_id)->first();
-                    
+
                     $member = Members::where('member_id', $getMember->member_id)
                         ->update([
                             'first_name' => $request->first_name,
@@ -654,7 +655,7 @@ class SinglesEncounterController extends Controller
                                                         ->where('seId', $getSe->seId)
                                                         ->pluck('invite_id')
                                                         ->toArray();
-                            
+
                             $inviterIdsToDelete = array_diff($existingInviterIds, array_column($inviters, 'invite_id'));
 
                             $deleteInviter = \DB::table('tblinvites')
@@ -687,7 +688,7 @@ class SinglesEncounterController extends Controller
                                 'status' => 200,
                                 'message' => 'Update Successful!'
                             ]);
-                            
+
                     } else {
                         $SE = SinglesEncounter::create([
                             'member_id' => $getMember->member_id,
@@ -699,13 +700,13 @@ class SinglesEncounterController extends Controller
                             'created_by' => $request->created_by,
                             'created_on' => now()
                         ]);
-                        
+
 
                         // START: Emergency Contact Insert Query
 
                             $dataSet = [];
                             $emergency_contacts = $request->emergency_contacts;
-                            
+
                             foreach ($emergency_contacts as $contacts) {
                                 $dataSet[] = [
                                     'seId' => $SE->seId,
