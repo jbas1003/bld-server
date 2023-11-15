@@ -389,11 +389,26 @@ class SinglesEncounterController extends Controller
                         'message' => $validator->messages(),
                     ]);
                 } else {
-                    $seAttendance = SinglesEncounter::where('member_id', '=', $request->member_id)
+                    $seAttendanceExist = SinglesEncounter::where('member_id', '=', $request->member_id)->first();
+
+                    if ($seAttendanceExist) {
+                        $seAttendance = SinglesEncounter::where('member_id', '=', $request->member_id)
                                 ->update([
                                     'event_id' => $request->event_id,
                                     'status' => $request->status
                                 ]);
+                    } else {
+                        $SE = SinglesEncounter::create([
+                            'member_id' => $request->member_id,
+                            'room' => $request->room,
+                            'nation' => $request->nation,
+                            'event_id' => $request->event_id,
+                            'status' => $request->status,
+                            'created_by' => $request->created_by,
+                            'created_on' => now()
+                        ]);
+                    }
+
 
                     $existingAttendance = Attendance::where('member_id', '=', $request->member_id)->first();
 
@@ -435,8 +450,6 @@ class SinglesEncounterController extends Controller
                             ]);
                         }
                     }
-
-                    return $seAttendance;
                 }
 
             } catch (\Throwable $th) {
