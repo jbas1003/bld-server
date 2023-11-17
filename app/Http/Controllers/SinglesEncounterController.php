@@ -309,7 +309,7 @@ class SinglesEncounterController extends Controller
     public function showSE (Request $request) {
         $participants = Members::selectRaw("tblmembers.member_id, tblsingles_encounter.seId, tblevents.event_id, tblevents.event_subtitle As event,
                                          tblmembers.first_name, tblmembers.middle_name, tblmembers.last_name, tblmembers.nickname, tblmembers.gender,
-                                         DATE_FORMAT(tblmembers.birthday, '%M %d, %Y') AS birthday, DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), tblmembers.birthday)), '%Y') + 0 AS Age,
+                                         DATE_FORMAT(tblmembers.birthday, '%M %d, %Y') AS birthday, DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), tblmembers.birthday)), '%Y') + 0 AS age,
                                          tblmembers.civil_status, tblmembers.religion, tblmembers.baptism, tblmembers.confirmation, tbladdresses.address_line1,
                                          tbladdresses.address_line2, tbladdresses.city, tblcontact_numbers.mobile, tblemails.email, tbloccupations.occupation_name,
                                          tbloccupations.specialty, tbloccupations.company, tbloccupations.address_line1 As work_addressLine1, tbloccupations.address_line2 as work_addressLine2,
